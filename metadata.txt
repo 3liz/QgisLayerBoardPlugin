@@ -24,9 +24,9 @@ email=info@3liz.com
 # Tags are comma separated with spaces allowed
 tags=layers, properties, table, metadata
 
-homepage=
-tracker=
-repository=
+homepage=https://github.com/3liz/QgisLayerBoardPlugin/
+tracker=https://github.com/3liz/QgisLayerBoardPlugin/issues
+repository=https://github.com/3liz/QgisLayerBoardPlugin/
 category=Plugins
 icon=icon.png
 # experimental flag
