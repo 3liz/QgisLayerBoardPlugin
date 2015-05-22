@@ -252,6 +252,7 @@ class LayerBoard:
         lt = self.layersTable[layerType]
         table = lt['tableWidget']
 
+        # disconnect itemChanged signal
         try: table.itemChanged.disconnect()
         except Exception: pass
 
@@ -358,7 +359,6 @@ class LayerBoard:
         elif prop == 'rasterUnitsPerPixelY':
             return int( layer.rasterUnitsPerPixelY() )
 
-
         else:
             return None
 
@@ -383,6 +383,8 @@ class LayerBoard:
         layerId = table.item( row, 0 ).data( Qt.EditRole )
         lr = QgsMapLayerRegistry.instance()
         layer = lr.mapLayer( layerId )
+        if not layer:
+            return
 
         # Get changed property
         prop = self.layersAttributes[layerType][col]['key']
@@ -427,6 +429,9 @@ class LayerBoard:
             else:
                 continue
 
+        # Refresh table
+        self.populateLayerTable( layerType )
+
 
     def applyChanges(self, key):
         '''
@@ -463,10 +468,8 @@ class LayerBoard:
 
         # Apply changes
         widget = self.applyButtons[key]['input']
-        self.setLayerProperty( layerType, layers, key, unicode( widget.text() ) )
-
-        # Refresh table
-        self.populateLayerTable( layerType )
+        if len( layers ) > 0:
+            self.setLayerProperty( layerType, layers, key, unicode( widget.text() ) )
 
 
     def chooseProjection(self):
