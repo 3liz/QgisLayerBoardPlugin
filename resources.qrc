@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/LayerBoard" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
