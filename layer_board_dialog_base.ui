@@ -30,23 +30,7 @@
    <item>
     <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Double-clik on a cell to edit the property ( layer name, title, abstract, max and min scales). The changes you make are automatically applied to the layers ! You can select multiple lines and then use the tools in the right panel to modify the properties for the selected layers at once.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_6">
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>This plugin modifies the properties of the layers and is still experimental. Please backup your project first !</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Double-clik on any editable cell to edit the property ( layer name, title, abstract, max and min scales). The changes you make are highlighted. You can also select multiple lines and then use the tools in the right panel to modify the properties for the selected layers at once.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The changes are not automatically applied to the layers. You can apply all the changes at once by using the apply button under the table.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -64,7 +48,7 @@
         <x>0</x>
         <y>0</y>
         <width>1033</width>
-        <height>461</height>
+        <height>455</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
@@ -109,6 +93,33 @@
                 </attribute>
                </widget>
               </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_2">
+                <item>
+                 <widget class="QPushButton" name="btDiscardVectorChanges">
+                  <property name="text">
+                   <string>Discard changes</string>
+                  </property>
+                  <property name="default">
+                   <bool>false</bool>
+                  </property>
+                  <property name="flat">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btCommitVectorChanges">
+                  <property name="text">
+                   <string>Apply changes on vector layers</string>
+                  </property>
+                  <property name="default">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
              </layout>
             </widget>
             <widget class="QWidget" name="tab_2">
@@ -136,6 +147,47 @@
                 <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
                  <bool>true</bool>
                 </attribute>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_7">
+                <item>
+                 <widget class="QPushButton" name="btDiscardRasterChanges">
+                  <property name="text">
+                   <string>Discard changes</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btCommitRasterChanges">
+                  <property name="autoFillBackground">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>Apply changes on raster layers</string>
+                  </property>
+                  <property name="default">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="tab_3">
+             <attribute name="title">
+              <string>Log</string>
+             </attribute>
+             <layout class="QVBoxLayout" name="verticalLayout_11">
+              <item>
+               <widget class="QTextEdit" name="txtLog"/>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btClearLog">
+                <property name="text">
+                 <string>Clear log</string>
+                </property>
                </widget>
               </item>
              </layout>
@@ -178,7 +230,17 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLineEdit" name="inCrs"/>
+                  <widget class="QLineEdit" name="inCrs">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                   <property name="placeholderText">
+                    <string/>
+                   </property>
+                  </widget>
                  </item>
                  <item>
                   <widget class="QToolButton" name="btDefineProjection">
@@ -190,7 +252,7 @@
                  <item>
                   <widget class="QPushButton" name="btApplyCrs">
                    <property name="text">
-                    <string>apply</string>
+                    <string>set</string>
                    </property>
                   </widget>
                  </item>
@@ -236,7 +298,7 @@
                <item>
                 <widget class="QPushButton" name="btApplyMaxScale">
                  <property name="text">
-                  <string>apply</string>
+                  <string>set</string>
                  </property>
                 </widget>
                </item>
@@ -264,23 +326,19 @@
                <item>
                 <widget class="QPushButton" name="btApplyMinScale">
                  <property name="text">
-                  <string>apply</string>
+                  <string>set</string>
                  </property>
                 </widget>
                </item>
               </layout>
              </item>
             </layout>
-            <zorder>label_2</zorder>
-            <zorder>verticalLayoutWidget</zorder>
-            <zorder>horizontalLayoutWidget_3</zorder>
-            <zorder>horizontalLayoutWidget_2</zorder>
            </widget>
           </item>
           <item>
            <widget class="QGroupBox" name="groupBox_2">
             <property name="title">
-             <string>Actions on selected layers</string>
+             <string>Actions on selected layer</string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_9">
              <item>
@@ -303,7 +361,7 @@
           <item>
            <widget class="QGroupBox" name="groupBox_3">
             <property name="title">
-             <string>Export</string>
+             <string>Export layers information</string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_10">
              <item>
@@ -336,7 +394,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Close</set>
      </property>
     </widget>
    </item>

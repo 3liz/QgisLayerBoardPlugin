@@ -3,7 +3,7 @@
 /***************************************************************************
  LayerBoard
                                  A QGIS plugin
- This plugin display a table with all the project layers and let you change some properties directly. I aims also to be a board showing usefull information on all layers, and export this information as CSV or PDF
+ This plugin displays tables with all the project layers and lets the user change some properties directly. I also aims to be a board showing usefull information on all layers, and export this information as CSV or PDF
                               -------------------
         begin                : 2015-05-21
         git sha              : $Format:%H$
@@ -32,6 +32,7 @@ import resources_rc
 # Import the code for the dialog
 from layer_board_dialog import LayerBoardDialog
 import os.path
+import datetime
 
 
 class LayerBoard:
@@ -67,13 +68,13 @@ class LayerBoard:
         # Create the dialog (after translation) and keep reference
         self.dlg = LayerBoardDialog()
 
-        # Plugin properties
+        # Layers attribute that can be shown and optionally changed in the plugin
         self.layersTable =  {
             'generic': {
                 'attributes': [
                     {'key': 'id', 'editable': False },
                     {'key': 'name', 'editable': True, 'type': 'string'},
-                    {'key': 'srs', 'editable': False, 'type': 'srs'},
+                    {'key': 'crs', 'editable': False, 'type': 'crs'},
                     {'key': 'maxScale', 'editable': True, 'type': 'integer'},
                     {'key': 'minScale', 'editable': True, 'type': 'integer'},
                     {'key': 'extent', 'editable': False},
@@ -86,7 +87,9 @@ class LayerBoard:
                 'tableWidget': self.dlg.vectorLayers,
                 'attributes': [
                     {'key': 'featureCount', 'editable': False}
-                ]
+                ],
+                'commitButton': self.dlg.btCommitVectorChanges,
+                'discardButton': self.dlg.btDiscardVectorChanges
             },
             'raster': {
                 'tableWidget': self.dlg.rasterLayers,
@@ -95,10 +98,17 @@ class LayerBoard:
                     {'key': 'height', 'editable': False},
                     {'key': 'rasterUnitsPerPixelX', 'editable': False},
                     {'key': 'rasterUnitsPerPixelY', 'editable': False}
-                ]
+                ],
+                'commitButton': self.dlg.btCommitRasterChanges,
+                'discardButton': self.dlg.btDiscardRasterChanges
             }
         }
+
+        # Attributes for a specific layer type
         self.layersAttributes = {}
+
+        # Changed data for each layer type
+        self.layerBoardChangedData = {}
 
         # Declare instance attributes
         self.actions = []
@@ -106,29 +116,6 @@ class LayerBoard:
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'LayerBoard')
         self.toolbar.setObjectName(u'LayerBoard')
-
-        # slots/signals
-        self.dlg.btDefineProjection.clicked.connect( self.chooseProjection )
-
-        self.applyButtons = {
-            "crs" : {
-                "button" : self.dlg.btApplyCrs,
-                "input" : self.dlg.inCrs
-            },
-            "maxScale" : {
-                "button" : self.dlg.btApplyMaxScale,
-                "input" : self.dlg.inMaxScale
-            },
-            "minScale" : {
-                "button" : self.dlg.btApplyMinScale,
-                "input" : self.dlg.inMinScale
-            }
-        }
-        for key, item in self.applyButtons.items():
-            control = item['button']
-            slot = partial( self.applyChanges, key )
-            control.clicked.connect(slot)
-
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -229,8 +216,45 @@ class LayerBoard:
             callback=self.run,
             parent=self.iface.mainWindow())
 
-    def test( self, item ):
-        print "test  %s %s" % ( item.row, item.col )
+        # slots/signals
+        ###############
+
+        # Projection selector
+        self.dlg.btDefineProjection.clicked.connect( self.chooseProjection )
+
+        # Right pannel buttons to apply property on several layers
+        self.applyMultipleLayersButtons = {
+            "crs" : {
+                "button" : self.dlg.btApplyCrs,
+                "input" : self.dlg.inCrs
+            },
+            "maxScale" : {
+                "button" : self.dlg.btApplyMaxScale,
+                "input" : self.dlg.inMaxScale
+            },
+            "minScale" : {
+                "button" : self.dlg.btApplyMinScale,
+                "input" : self.dlg.inMinScale
+            }
+        }
+        for key, item in self.applyMultipleLayersButtons.items():
+            control = item['button']
+            slot = partial( self.applyPropertyOnSelectedLayers, key )
+            control.clicked.connect(slot)
+
+        # Apply/Discard changes made on the table
+        for layerType, item in self.layersTable.items():
+            if 'commitButton' in item:
+                control = item['commitButton']
+                slot = partial( self.commitLayersChanges, layerType )
+                control.clicked.connect(slot)
+            if 'discardButton' in item:
+                control = item['discardButton']
+                slot = partial( self.discardLayersChanges, layerType )
+                control.clicked.connect(slot)
+
+        # Log
+        self.dlg.btClearLog.clicked.connect( self.clearLog )
 
 
     def unload(self):
@@ -240,17 +264,41 @@ class LayerBoard:
                 self.tr(u'&Layer Board'),
                 action)
             self.iface.removeToolBarIcon(action)
+
         # remove the toolbar
         del self.toolbar
 
+    def clearLog(self):
+        '''
+        Clear the log
+        '''
+        self.dlg.txtLog.clear()
 
-    def populateLayerTable( self, layerType='vector'):
+    def updateLog(self, msg):
+        '''
+        Update the log
+        '''
+        t = self.dlg.txtLog
+        t.ensureCursorVisible()
+        prefix = '<span style="font-weight:normal;">'
+        suffix = '</span>'
+        t.append( '%s %s %s' % (prefix, msg, suffix) )
+        c = t.textCursor()
+        c.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
+        t.setTextCursor(c)
+        qApp.processEvents()
+
+
+    def populateLayerTable( self, layerType ):
         """
-        Fill the table
+        Fill the table for a given layer type
         """
         # Get parameters for the widget
         lt = self.layersTable[layerType]
         table = lt['tableWidget']
+
+        # Reset layerBoardChangedData
+        self.layerBoardChangedData[ layerType ] = {}
 
         # disconnect itemChanged signal
         try: table.itemChanged.disconnect()
@@ -280,10 +328,14 @@ class LayerBoard:
             if layerType == 'raster' and layer.type() != QgsMapLayer.RasterLayer:
                 continue
 
+            # Add layer in the layerBoardChangedData
+            self.layerBoardChangedData[ layerType ][ lid ] = {}
+
+            # Set row and column count
             twRowCount = table.rowCount()
             # add a new line
-            table.setRowCount(twRowCount + 1)
-            table.setColumnCount(colCount)
+            table.setRowCount( twRowCount + 1 )
+            table.setColumnCount( colCount )
             i=0
 
             # get information
@@ -305,7 +357,7 @@ class LayerBoard:
                 i+=1
 
 
-        # Layer board signal/slots
+        # Launch slot on item changed slot
         slot = partial( self.onItemChanged, layerType )
         table.itemChanged.connect( slot )
 
@@ -327,7 +379,7 @@ class LayerBoard:
         elif prop == 'abstract':
             return layer.abstract()
 
-        elif prop == 'srs':
+        elif prop == 'crs':
             return layer.crs().authid()
 
         elif prop == 'extent':
@@ -362,9 +414,11 @@ class LayerBoard:
         else:
             return None
 
+
     def onItemChanged( self, layerType, item ):
         '''
-        Change the data for one edited cell
+        Get data when table item content has changed
+        And store it for future use
         '''
 
         # Get table
@@ -379,6 +433,9 @@ class LayerBoard:
         row = item.row()
         col = item.column()
 
+        # Unselect row and item
+        table.clearSelection()
+
         # Get layer
         layerId = table.item( row, 0 ).data( Qt.EditRole )
         lr = QgsMapLayerRegistry.instance()
@@ -390,7 +447,11 @@ class LayerBoard:
         prop = self.layersAttributes[layerType][col]['key']
         data = table.item( row, col ).data( Qt.EditRole )
 
-        self.setLayerProperty( layerType, [layer], prop, data )
+        # Store data in global property
+        self.layerBoardChangedData[ layerType ][ layerId ][ prop ] = data
+
+        # Change cell background
+        table.item( row, col ).setBackground( Qt.yellow );
 
 
     def setLayerProperty( self, layerType, layers, prop, data ):
@@ -399,6 +460,9 @@ class LayerBoard:
         '''
 
         for layer in layers:
+
+            if not layer:
+                continue
 
             if prop == 'name':
                 layer.setLayerName( str(data) )
@@ -433,11 +497,18 @@ class LayerBoard:
         self.populateLayerTable( layerType )
 
 
-    def applyChanges(self, key):
+    def applyPropertyOnSelectedLayers(self, key):
         '''
         Apply changes on selected layers
-        for the clicked key
+        for the clicked button key
         '''
+
+        # Value
+        widget = self.applyMultipleLayersButtons[key]['input']
+        value = unicode( widget.text() )
+        if not value:
+            return
+
         # Get active table
         tab = self.dlg.tabWidget.currentIndex()
         if tab == 0:
@@ -455,21 +526,63 @@ class LayerBoard:
         if not lines:
             return
 
+        # Get column for the key
+        col = next(index for (index, d) in enumerate(self.layersAttributes[ layerType ]) if d['key'] == key)
+        if not col:
+            return
 
-        # Get layers to change
-        lr = QgsMapLayerRegistry.instance()
-        layers = []
+        # Modify values for each line
         for index in lines:
             row = index.row()
-            lid = table.item( row, 0 ).data( Qt.EditRole )
-            layer = lr.mapLayer( lid )
-            if layer:
-               layers.append( layer )
+            item = table.item( row, col )
+            item.setData( Qt.EditRole, value )
 
-        # Apply changes
-        widget = self.applyButtons[key]['input']
-        if len( layers ) > 0:
-            self.setLayerProperty( layerType, layers, key, unicode( widget.text() ) )
+
+    def commitLayersChanges(self, layerType='vector'):
+        '''
+        Commit all the changes made by the user
+        visible via the different background color
+        i.e. apply properties on layers
+        '''
+        lr = QgsMapLayerRegistry.instance()
+        self.updateLog( '' )
+        self.updateLog( '###############' )
+        self.updateLog( datetime.datetime.now().strftime("%Y-%m-%d %H:%M") )
+        self.updateLog( self.tr( u'Layer type: ' ) +  layerType )
+        self.updateLog( '###############' )
+
+        # Get all layers which have changes
+        for layerId, layerData in self.layerBoardChangedData[layerType].items():
+            # Some layers have an empty changed dictionnary
+            if not layerData:
+                continue
+
+            # Get QGIS layer
+            layer = lr.mapLayer( layerId )
+            if not layer:
+                # Reset layer data
+                self.layerBoardChangedData[ layerType ][ layerId ] = {}
+                continue
+
+            # Log
+            self.updateLog( '' )
+            self.updateLog( '<b>%s</b> ( %s ):' % ( layer.name(), layerId ) )
+
+            # Get all properties to commit with value
+            for prop, data in layerData.items():
+                if data:
+                    self.setLayerProperty( layerType, [layer], prop, data )
+                    self.updateLog( '* %s -> %s' % ( prop, data ) )
+
+        # Repopulate table
+        self.populateLayerTable( layerType )
+
+    def discardLayersChanges(self, layerType='vector'):
+        '''
+        Repopulate the table, which also reinitialize the layerBoardChangedData
+        '''
+        # Repopulate table
+        self.populateLayerTable( layerType )
 
 
     def chooseProjection(self):
@@ -477,8 +590,8 @@ class LayerBoard:
         Let the user choose a SCR
         '''
 
-        # SRS Dialog parameters
-        header = u"Choose SRS"
+        # crs Dialog parameters
+        header = u"Choose CRS"
         sentence = u""
         projSelector = QgsGenericProjectionSelector( self.dlg )
         projSelector.setMessage( "<h2>%s</h2>%s" % (header.encode('UTF8'), sentence.encode('UTF8')) )

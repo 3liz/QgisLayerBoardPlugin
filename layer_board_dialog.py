@@ -3,7 +3,7 @@
 /***************************************************************************
  LayerBoardDialog
                                  A QGIS plugin
- This plugin display a table with all the project layers and let you change some properties directly. I aims also to be a board showing usefull information on all layers, and export this information as CSV or PDF
+ This plugin displays a table with all the project layers and lets the user change some properties directly. It also aims to be a board showing usefull information on all layers, and export this information as CSV or PDF
                              -------------------
         begin                : 2015-05-21
         git sha              : $Format:%H$
