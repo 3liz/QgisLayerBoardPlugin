@@ -9,8 +9,8 @@
 [general]
 name=Layer Board
 qgisMinimumVersion=2.0
-description=This plugin help to see and modify properties for vector and raster layers. It shows the layers in a sheet, and the user can directly modify some properties such as layer name, title, abstract, minimum and maximum scale. Some actions can be performed on multiple layers at once, such as modifying spatial reference system and scale based visibility.
-version=0.1
+description=This plugin helps to see and modify properties for vector and raster layers. It shows the layers in a table sheet, and the user can directly modify some properties such as layer name, title, abstract, minimum and maximum scales. Some actions can be performed on multiple layers at once, such as modifying spatial reference system and scale based visibility.
+version=0.2
 author=Michaël DOUCHIN (3liz)
 email=info@3liz.com
 
@@ -19,10 +19,14 @@ email=info@3liz.com
 # Recommended items:
 
 # Uncomment the following line and add your changelog:
-# changelog=
+changelog=
+  Version 0.2
+  * The changes are not applied automatically on layers any more. They are just highlited in the table
+  * Two buttons for each table can be used to discard or apply changes on layers
+  * A new "Log" tab has been added and shows the changes made during the session. Content can be manually copied.
 
 # Tags are comma separated with spaces allowed
-tags=layers, properties, table, metadata
+tags=layers, properties, table, metadata, report, board
 
 homepage=https://github.com/3liz/QgisLayerBoardPlugin/
 tracker=https://github.com/3liz/QgisLayerBoardPlugin/issues
