@@ -22,6 +22,7 @@
 """
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from PyQt4.QtXml import *
 from qgis.core import *
 from qgis.gui import QgsMessageBar, QgsGenericProjectionSelector
 
@@ -79,14 +80,14 @@ class LayerBoard:
                     {'key': 'minScale', 'editable': True, 'type': 'integer'},
                     {'key': 'extent', 'editable': False},
                     {'key': 'title', 'editable': True, 'type': 'string'},
-                    {'key': 'abstract', 'editable': True, 'type': 'string'},
-                    {'key': 'uri', 'editable': False}
+                    {'key': 'abstract', 'editable': True, 'type': 'string'}
                 ]
             },
             'vector': {
                 'tableWidget': self.dlg.vectorLayers,
                 'attributes': [
-                    {'key': 'featureCount', 'editable': False}
+                    {'key': 'featureCount', 'editable': False},
+                   {'key': 'source|uri', 'editable': True}
                 ],
                 'commitButton': self.dlg.btCommitVectorChanges,
                 'discardButton': self.dlg.btDiscardVectorChanges
@@ -97,7 +98,8 @@ class LayerBoard:
                     {'key': 'width', 'editable': False},
                     {'key': 'height', 'editable': False},
                     {'key': 'rasterUnitsPerPixelX', 'editable': False},
-                    {'key': 'rasterUnitsPerPixelY', 'editable': False}
+                    {'key': 'rasterUnitsPerPixelY', 'editable': False},
+                   {'key': 'uri', 'editable': False}
                 ],
                 'commitButton': self.dlg.btCommitRasterChanges,
                 'discardButton': self.dlg.btDiscardRasterChanges
@@ -385,9 +387,6 @@ class LayerBoard:
         elif prop == 'extent':
             return layer.extent().toString(2)
 
-        elif prop == 'uri':
-            return layer.dataProvider().dataSourceUri().split('|')[0]
-
         elif prop == 'maxScale':
             return int( layer.maximumScale() )
 
@@ -397,6 +396,9 @@ class LayerBoard:
         # vector
         elif prop == 'featureCount':
             return layer.featureCount()
+ 
+        elif prop == 'source|uri':
+            return layer.dataProvider().name()+"|"+layer.dataProvider().dataSourceUri().split('|')[0]
 
         # raster
         elif prop == 'width':
@@ -410,6 +412,9 @@ class LayerBoard:
 
         elif prop == 'rasterUnitsPerPixelY':
             return int( layer.rasterUnitsPerPixelY() )
+
+        elif prop == 'uri':
+            return layer.dataProvider().dataSourceUri().split('|')[0]
 
         else:
             return None
@@ -489,6 +494,9 @@ class LayerBoard:
                 if qcrs:
                     layer.setCrs(qcrs)
                     layer.triggerRepaint()
+ 
+            elif prop == 'source|uri':
+                self.setDataSource(layer,data)
 
             else:
                 continue
@@ -584,6 +592,42 @@ class LayerBoard:
         # Repopulate table
         self.populateLayerTable( layerType )
 
+    def setDataSource(self,layer,newSourceUri):
+        #method to apply a new datasource to a vector Layer
+        if "|" in newSourceUri:
+            newDatasourceType = newSourceUri.split("|")[0]
+            newUri = newSourceUri.split("|")[1].replace('\\','/')
+        else:
+            newDatasourceType = layer.dataProvider().name()
+            newUri = newSourceUri.replace('\\','/')
+        # read layer definition
+        XMLDocument = QDomDocument("style")
+        XMLMapLayers = QDomElement()
+        XMLMapLayers = XMLDocument.createElement("maplayers")
+        XMLMapLayer = QDomElement()
+        XMLMapLayer = XMLDocument.createElement("maplayer")
+        layer.writeLayerXML(XMLMapLayer,XMLDocument)
+        self.iface.setActiveLayer(layer)
+        
+        # probe new datasource to prevent layer issues
+        nlayer = QgsVectorLayer(newUri,"probe", newDatasourceType)
+        if not nlayer.isValid():
+            self.iface.messageBar().pushMessage("Error", "Incorrect source|uri string", level=QgsMessageBar.CRITICAL)
+            return
+        print "type", nlayer.geometryType(),layer.geometryType()
+        print "uri", newDatasourceType, newUri
+        if nlayer.geometryType() != layer.geometryType():
+            self.iface.messageBar().pushMessage("Error", "Geometry type mismatch", level=QgsMessageBar.CRITICAL)
+            return
+        # apply layer definition
+        XMLMapLayer.firstChildElement("datasource").firstChild().setNodeValue(newUri)
+        XMLMapLayer.firstChildElement("provider").firstChild().setNodeValue(newDatasourceType)
+        XMLMapLayers.appendChild(XMLMapLayer)
+        XMLDocument.appendChild(XMLMapLayers)
+        layer.readLayerXML(XMLMapLayer)
+        layer.reload()
+        self.iface.actionDraw().trigger()
+        self.iface.mapCanvas().refresh()
 
     def chooseProjection(self):
         '''
