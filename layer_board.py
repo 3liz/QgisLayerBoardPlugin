@@ -452,6 +452,14 @@ class LayerBoard:
         prop = self.layersAttributes[layerType][col]['key']
         data = table.item( row, col ).data( Qt.EditRole )
 
+        #test if new datasource prop is valid otherwise restore previos data
+        if prop == 'source|uri' and not self.newDatasourceIsValid(layer,data):
+            table.itemChanged.disconnect()
+            item.setData(Qt.EditRole,self.getLayerProperty(layer, 'source|uri' ))
+            slot = partial( self.onItemChanged, layerType )
+            table.itemChanged.connect( slot )
+            return
+
         # Store data in global property
         self.layerBoardChangedData[ layerType ][ layerId ][ prop ] = data
 
@@ -594,12 +602,7 @@ class LayerBoard:
 
     def setDataSource(self,layer,newSourceUri):
         #method to apply a new datasource to a vector Layer
-        if "|" in newSourceUri:
-            newDatasourceType = newSourceUri.split("|")[0]
-            newUri = newSourceUri.split("|")[1].replace('\\','/')
-        else:
-            newDatasourceType = layer.dataProvider().name()
-            newUri = newSourceUri.replace('\\','/')
+        newUri,newDatasourceType = self.splitSource(newSourceUri)
         # read layer definition
         XMLDocument = QDomDocument("style")
         XMLMapLayers = QDomElement()
@@ -607,18 +610,7 @@ class LayerBoard:
         XMLMapLayer = QDomElement()
         XMLMapLayer = XMLDocument.createElement("maplayer")
         layer.writeLayerXML(XMLMapLayer,XMLDocument)
-        self.iface.setActiveLayer(layer)
-        
-        # probe new datasource to prevent layer issues
-        nlayer = QgsVectorLayer(newUri,"probe", newDatasourceType)
-        if not nlayer.isValid():
-            self.iface.messageBar().pushMessage("Error", "Incorrect source|uri string", level=QgsMessageBar.CRITICAL)
-            return
-        print "type", nlayer.geometryType(),layer.geometryType()
-        print "uri", newDatasourceType, newUri
-        if nlayer.geometryType() != layer.geometryType():
-            self.iface.messageBar().pushMessage("Error", "Geometry type mismatch", level=QgsMessageBar.CRITICAL)
-            return
+
         # apply layer definition
         XMLMapLayer.firstChildElement("datasource").firstChild().setNodeValue(newUri)
         XMLMapLayer.firstChildElement("provider").firstChild().setNodeValue(newDatasourceType)
@@ -628,6 +620,33 @@ class LayerBoard:
         layer.reload()
         self.iface.actionDraw().trigger()
         self.iface.mapCanvas().refresh()
+
+    def splitSource (self,source):
+        if "|" in source:
+            datasourceType = source.split("|")[0]
+            uri = source.split("|")[1].replace('\\','/')
+        else:
+            datasourceType = None
+            uri = source.replace('\\','/')
+        return (datasourceType,uri)
+        
+
+    def newDatasourceIsValid(self,layer,newDS):
+        # probe new datasource to prevent layer issues
+        ds,uri = self.splitSource(newDS)
+        if not ds:
+            # if datasource type is not specified uri is probed with current one
+            ds = layer.dataProvider().name()
+        nlayer = QgsVectorLayer(uri,"probe", ds)
+        if not nlayer.isValid():
+            self.iface.messageBar().pushMessage("Error", "incorrect source|uri string: "+newDS, level=QgsMessageBar.CRITICAL, duration=4)
+            self.updateLog("\nERROR: incorrect source|uri string: "+newDS)
+            return None
+        if nlayer.geometryType() != layer.geometryType():
+            self.iface.messageBar().pushMessage("Error", "geometry type mismatch on new datasource: "+newDS, level=QgsMessageBar.CRITICAL, duration=4)
+            self.updateLog("\nERROR: geometry type mismatch on new datasource: "+newDS)
+            return None
+        return True
 
     def chooseProjection(self):
         '''
