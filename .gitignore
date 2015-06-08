@@ -6,3 +6,8 @@
 *.pyc
 *.DS_Store
 *.zip
+help/
+i18n/
+scripts/
+test/
+.idea/

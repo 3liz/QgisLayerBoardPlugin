@@ -602,7 +602,8 @@ class LayerBoard:
 
     def setDataSource(self,layer,newSourceUri):
         #method to apply a new datasource to a vector Layer
-        newUri,newDatasourceType = self.splitSource(newSourceUri)
+        newDS, newUri = self.splitSource(newSourceUri)
+        newDatasourceType = newDS or layer.dataProvider().name()
         # read layer definition
         XMLDocument = QDomDocument("style")
         XMLMapLayers = QDomElement()
