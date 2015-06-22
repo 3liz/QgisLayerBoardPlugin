@@ -27,6 +27,7 @@ from qgis.core import *
 from qgis.gui import QgsMessageBar, QgsGenericProjectionSelector
 
 from functools import partial
+import csv
 
 # Initialize Qt resources from file resources.py
 import resources_rc
@@ -111,6 +112,14 @@ class LayerBoard:
 
         # Changed data for each layer type
         self.layerBoardChangedData = {}
+
+        # Data contained in the table widget after it has been filled
+        self.layerBoardData = {}
+
+        # CSV default options
+        self.csvDelimiter = ','
+        self.csvQuotechar = '"'
+        self.csvQuoting = csv.QUOTE_ALL
 
         # Declare instance attributes
         self.actions = []
@@ -258,6 +267,9 @@ class LayerBoard:
         # Log
         self.dlg.btClearLog.clicked.connect( self.clearLog )
 
+        # Export
+        self.dlg.btExportCsv.clicked.connect( self.exportToCsv )
+
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -309,6 +321,10 @@ class LayerBoard:
         attributes = self.layersTable['generic']['attributes'] + lt['attributes']
         self.layersAttributes[ layerType ] = attributes
 
+        self.layerBoardData[ layerType ] = []
+        headerData = [ a['key'] for a in attributes ]
+        self.layerBoardData[ layerType ].append( headerData )
+
         # empty previous content
         for row in range(table.rowCount()):
             table.removeRow(row)
@@ -332,6 +348,7 @@ class LayerBoard:
 
             # Add layer in the layerBoardChangedData
             self.layerBoardChangedData[ layerType ][ lid ] = {}
+            lineData = []
 
             # Set row and column count
             twRowCount = table.rowCount()
@@ -354,9 +371,15 @@ class LayerBoard:
                 value = self.getLayerProperty( layer, attr['key'] )
                 newItem.setData( Qt.EditRole, value )
 
+                # Add cell data to lineData
+                lineData.append( value )
+
                 # Add item
                 table.setItem(twRowCount, i, newItem)
                 i+=1
+
+            # Add data to layerBoardData
+            self.layerBoardData[ layerType ].append( lineData )
 
 
         # Launch slot on item changed slot
@@ -396,7 +419,7 @@ class LayerBoard:
         # vector
         elif prop == 'featureCount':
             return layer.featureCount()
- 
+
         elif prop == 'source|uri':
             return layer.dataProvider().name()+"|"+layer.dataProvider().dataSourceUri().split('|')[0]
 
@@ -502,7 +525,7 @@ class LayerBoard:
                 if qcrs:
                     layer.setCrs(qcrs)
                     layer.triggerRepaint()
- 
+
             elif prop == 'source|uri':
                 self.setDataSource(layer,data)
 
@@ -511,6 +534,21 @@ class LayerBoard:
 
         # Refresh table
         self.populateLayerTable( layerType )
+
+    def getActiveLayerType( self ):
+        '''
+        Get the visible layer type table
+        '''
+        layerType = None
+        tab = self.dlg.tabWidget.currentIndex()
+        if tab == 0:
+            table = self.dlg.vectorLayers
+            layerType = 'vector'
+        elif tab == 1:
+            table = self.dlg.rasterLayers
+            layerType = 'raster'
+
+        return layerType
 
 
     def applyPropertyOnSelectedLayers(self, key):
@@ -525,21 +563,15 @@ class LayerBoard:
         if not value:
             return
 
-        # Get active table
-        tab = self.dlg.tabWidget.currentIndex()
-        if tab == 0:
-            table = self.dlg.vectorLayers
-            layerType = 'vector'
-        elif tab == 1:
-            table = self.dlg.rasterLayers
-            layerType = 'raster'
-        else:
-            return
-
         # Get selected lines
         sm = table.selectionModel()
         lines = sm.selectedRows()
         if not lines:
+            return
+
+        # Get active table
+        layerType = self.getActiveLayerType()
+        if not layerType:
             return
 
         # Get column for the key
@@ -629,7 +661,7 @@ class LayerBoard:
             datasourceType = None
             uri = source.replace('\\','/')
         return (datasourceType,uri)
-        
+
 
     def newDatasourceIsValid(self,layer,newDS):
         # probe new datasource to prevent layer issues
@@ -674,6 +706,42 @@ class LayerBoard:
 
         else:
             return
+
+
+    def exportToCsv(self, layerType):
+        '''
+        Exports the layers information to CSV
+
+        '''
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+
+
+        # Get active table
+        layerType = self.getActiveLayerType()
+        if not layerType:
+            return
+
+        # Get layer data
+        data = self.layerBoardData[ layerType ]
+
+        # Export data to CSV
+        path = QFileDialog.getSaveFileName( self.dlg, QApplication.translate(u"LayerBoard", u"Choose the path where the data must be saved."), '', 'CSV(*.csv)' )
+        try:
+            with open( path, 'wb' ) as csvfile:
+                writer = csv.writer(
+                    csvfile, delimiter=self.csvDelimiter, quotechar=self.csvQuotechar, quoting=self.csvQuoting
+                )
+                writer.writerows( data )
+            msg = QApplication.translate(u"LayerBoard", u"The layer has been successfully exported.")
+            status = 'info'
+        except OSError, e:
+            msg = QApplication.translate("LayerBoard", u"An error occured during layer export." + str(e.error))
+            status = 'critical'
+        finally:
+            QApplication.restoreOverrideCursor()
+
+        return msg, status
+
 
     def run(self):
         """Run method that performs all the real work"""
