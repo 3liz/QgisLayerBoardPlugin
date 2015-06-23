@@ -714,7 +714,13 @@ class LayerBoard:
         Exports the layers information to CSV
 
         '''
-        QApplication.setOverrideCursor(Qt.WaitCursor)
+
+        # Cancel if not path given
+        path = QFileDialog.getSaveFileName( self.dlg, QApplication.translate(u"LayerBoard", u"Choose the path where the data must be saved."), '', 'CSV(*.csv)' )
+        if not path:
+            msg = QApplication.translate(u"LayerBoard", u"No destination file chose. Export canceled.")
+            status = 'info'
+            return msg, status
 
 
         # Get active table
@@ -725,9 +731,9 @@ class LayerBoard:
         # Get layer data
         data = self.layerBoardData[ layerType ]
 
-        # Export data to CSV
-        path = QFileDialog.getSaveFileName( self.dlg, QApplication.translate(u"LayerBoard", u"Choose the path where the data must be saved."), '', 'CSV(*.csv)' )
+        # Write data into CSV file
         try:
+            QApplication.setOverrideCursor(Qt.WaitCursor)
             with open( path, 'wb' ) as csvfile:
                 writer = csv.writer(
                     csvfile, delimiter=self.csvDelimiter, quotechar=self.csvQuotechar, quoting=self.csvQuoting
