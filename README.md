@@ -15,6 +15,7 @@ Michaël Douchin ( 3liz )
 Contributors
 ---------------
 
+Enrico Ferreguti @enricofer
 
 Licence
 -----------
