@@ -28,6 +28,7 @@ from qgis.gui import QgsMessageBar, QgsGenericProjectionSelector
 
 from functools import partial
 import csv
+import sys
 
 # Initialize Qt resources from file resources.py
 import resources_rc
@@ -372,6 +373,9 @@ class LayerBoard:
                 newItem.setData( Qt.EditRole, value )
 
                 # Add cell data to lineData
+                # encode it in the file system encoding, only if needed
+                if hasattr( value, 'encode' ):
+                    value = value.encode( sys.getfilesystemencoding() )
                 lineData.append( value )
 
                 # Add item
