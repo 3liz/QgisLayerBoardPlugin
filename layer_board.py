@@ -24,7 +24,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtXml import *
 from qgis.core import *
-from qgis.gui import QgsMessageBar, QgsGenericProjectionSelector
+from qgis.gui import *
 
 from functools import partial
 import csv
@@ -121,6 +121,10 @@ class LayerBoard:
         self.csvDelimiter = ','
         self.csvQuotechar = '"'
         self.csvQuoting = csv.QUOTE_ALL
+
+        # Keep record of style widget
+        self.styleWidget = None
+        self.styleLayer = None
 
         # Declare instance attributes
         self.actions = []
@@ -256,20 +260,31 @@ class LayerBoard:
 
         # Apply/Discard changes made on the table
         for layerType, item in self.layersTable.items():
+            # Commit button
             if 'commitButton' in item:
                 control = item['commitButton']
                 slot = partial( self.commitLayersChanges, layerType )
                 control.clicked.connect(slot)
+            # Discard button
             if 'discardButton' in item:
                 control = item['discardButton']
                 slot = partial( self.discardLayersChanges, layerType )
                 control.clicked.connect(slot)
+            # Style widget
+            if layerType in ('vector', 'raster'):
+                slot = partial( self.setSelectedLayerStyleWidget, layerType )
+                table = item['tableWidget']
+                sm = table.selectionModel()
+                sm.selectionChanged.connect( slot )
 
         # Log
         self.dlg.btClearLog.clicked.connect( self.clearLog )
 
         # Export
         self.dlg.btExportCsv.clicked.connect( self.exportToCsv )
+
+        # Apply style
+        self.dlg.btApplyStyle.clicked.connect( self.applyStyle )
 
 
     def unload(self):
@@ -389,7 +404,6 @@ class LayerBoard:
         # Launch slot on item changed slot
         slot = partial( self.onItemChanged, layerType )
         table.itemChanged.connect( slot )
-
 
     def getLayerProperty( self, layer, prop ):
         """
@@ -636,10 +650,14 @@ class LayerBoard:
         # Repopulate table
         self.populateLayerTable( layerType )
 
+
     def setDataSource(self,layer,newSourceUri):
-        #method to apply a new datasource to a vector Layer
+        '''
+        Method to apply a new datasource to a vector Layer
+        '''
         newDS, newUri = self.splitSource(newSourceUri)
         newDatasourceType = newDS or layer.dataProvider().name()
+
         # read layer definition
         XMLDocument = QDomDocument("style")
         XMLMapLayers = QDomElement()
@@ -659,6 +677,9 @@ class LayerBoard:
         self.iface.mapCanvas().refresh()
 
     def splitSource (self,source):
+        '''
+        Split QGIS datasource into meaningfull components
+        '''
         if "|" in source:
             datasourceType = source.split("|")[0]
             uri = source.split("|")[1].replace('\\','/')
@@ -669,7 +690,9 @@ class LayerBoard:
 
 
     def newDatasourceIsValid(self,layer,newDS):
-        # probe new datasource to prevent layer issues
+        '''
+        Probe new datasource to prevent layer issues
+        '''
         ds,uri = self.splitSource(newDS)
         if not ds:
             # if datasource type is not specified uri is probed with current one
@@ -689,7 +712,6 @@ class LayerBoard:
         '''
         Let the user choose a SCR
         '''
-
         # crs Dialog parameters
         header = u"Choose CRS"
         sentence = u""
@@ -713,6 +735,73 @@ class LayerBoard:
             return
 
 
+    ###########
+    # STYLE
+    ###########
+
+    def setSelectedLayerStyleWidget(self, layerType, selected, unselected):
+        '''
+        Get selected layer and display the corresponding style widget
+        in the right panel
+        '''
+        lt = self.layersTable[layerType]
+        table = lt['tableWidget']
+        sm = table.selectionModel()
+        lines = sm.selectedRows()
+        showStyle = True
+
+        # Empty label widget if style must not been displayed
+        w = QLabel()
+        w.setText( u'' )
+        layer = None
+
+        # Refresh Style tab
+        if len( lines ) != 1:
+            showStyle = False
+
+        if showStyle:
+            row = lines[0].row()
+
+            # Get layer
+            layerId = table.item( row, 0 ).data( Qt.EditRole )
+            lr = QgsMapLayerRegistry.instance()
+            layer = lr.mapLayer( layerId )
+            if not layer:
+                showStyle = False
+            else:
+                self.styleLayer = layer
+
+        if showStyle and layer:
+            # Choose widget depending on layer
+            if layer.type() == 0 and layer.geometryType() not in [3, 4]:
+                w = QgsRendererV2PropertiesDialog( layer, QgsStyleV2.defaultStyle(), True )
+
+        # Make the widget visible
+        self.styleWidget = w
+        self.styleLayer = layer
+        self.dlg.styleScrollArea.setWidget( w )
+
+
+    def applyStyle( self ):
+        '''
+        Apply the style changed in the Style tab to the selected layer
+        '''
+        # Do nothing if no widget or layer
+        w = self.styleWidget
+        layer = self.styleLayer
+        if not w or not layer or not hasattr( w , 'apply' ):
+            return
+
+        # Apply the new renderer to the layer
+        w.apply()
+        if hasattr(layer, "setCacheImage"):
+            layer.setCacheImage( None )
+        layer.triggerRepaint()
+
+
+    ############
+    # EXPORT
+    ############
     def exportToCsv(self, layerType):
         '''
         Exports the layers information to CSV
@@ -754,6 +843,9 @@ class LayerBoard:
         return msg, status
 
 
+    #######
+    # RUN
+    #######
     def run(self):
         """Run method that performs all the real work"""
 
@@ -766,6 +858,8 @@ class LayerBoard:
         self.dlg.show()
         # Run the dialog event loop
         result = self.dlg.exec_()
+
+
 
 
         # See if OK was pressed
