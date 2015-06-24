@@ -15,22 +15,9 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label">
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Project layers board</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Double-clik on any editable cell to edit the property ( layer name, title, abstract, max and min scales). The changes you make are highlighted. You can also select multiple lines and then use the tools in the right panel to modify the properties for the selected layers at once.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The changes are not automatically applied to the layers. You can apply all the changes at once by using the apply button under the table.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Double-clik on any editable cell to edit the property ( layer name, title, abstract, max and min scales). The changes you make are highlighted. You can also select multiple lines and then use the tools in the right panel to modify the properties for the selected layers at once.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The changes in the table are not automatically applied to the layers. You can apply all the changes at once by using the apply button under the table.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -48,7 +35,7 @@
         <x>0</x>
         <y>0</y>
         <width>1033</width>
-        <height>455</height>
+        <height>461</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -432,7 +419,7 @@
              </widget>
              <widget class="QWidget" name="tab_5">
               <attribute name="title">
-               <string>Single Layer Style</string>
+               <string>Layer Style</string>
               </attribute>
               <layout class="QVBoxLayout" name="verticalLayout_13">
                <item>
@@ -445,8 +432,8 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>460</width>
-                    <height>331</height>
+                    <width>461</width>
+                    <height>337</height>
                    </rect>
                   </property>
                  </widget>

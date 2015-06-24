@@ -1,6 +1,10 @@
 Changelog
 ===========
 
+Version 0.4: Added 2 main features:
+* Perform actions on multiple layers : save as default style and create spatial index
+* New style tab which allows to see and change style for vector layers
+
 Version 0.3.1
 * CSV export - Handle non ascii characters by encoding CSV data to file system encoding
 * CSV export - prevent error when canceling the export and no filename given
