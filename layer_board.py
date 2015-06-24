@@ -270,6 +270,23 @@ class LayerBoard:
                 control = item['discardButton']
                 slot = partial( self.discardLayersChanges, layerType )
                 control.clicked.connect(slot)
+
+        # Right pannel buttons to perform actions on multiple layers
+        self.applyMultipleLayersActions = {
+            "saveStyleAsDefault" : {
+                "button" : self.dlg.btSaveStyleAsDefault
+            },
+            "createSpatialIndex" : {
+                "button" : self.dlg.btCreateSpatialIndex
+            }
+        }
+        for key, item in self.applyMultipleLayersActions.items():
+            control = item['button']
+            slot = partial( self.performActionOnSelectedLayers, key )
+            control.clicked.connect(slot)
+
+        # Actions when row selection changes
+        for layerType, item in self.layersTable.items():
             # Style widget
             if layerType in ('vector', 'raster'):
                 slot = partial( self.setSelectedLayerStyleWidget, layerType )
@@ -404,6 +421,7 @@ class LayerBoard:
         # Launch slot on item changed slot
         slot = partial( self.onItemChanged, layerType )
         table.itemChanged.connect( slot )
+
 
     def getLayerProperty( self, layer, prop ):
         """
@@ -581,15 +599,17 @@ class LayerBoard:
         if not value:
             return
 
+        # Get active table
+        layerType = self.getActiveLayerType()
+        if not layerType:
+            return
+        lt = self.layersTable[layerType]
+        table = lt['tableWidget']
+
         # Get selected lines
         sm = table.selectionModel()
         lines = sm.selectedRows()
         if not lines:
-            return
-
-        # Get active table
-        layerType = self.getActiveLayerType()
-        if not layerType:
             return
 
         # Get column for the key
@@ -603,6 +623,47 @@ class LayerBoard:
             item = table.item( row, col )
             item.setData( Qt.EditRole, value )
 
+
+
+    def performActionOnSelectedLayers(self, key):
+        '''
+        Perform actions on selected layers
+        for the clicked button key
+        '''
+        # Get active table
+        layerType = self.getActiveLayerType()
+        if not layerType:
+            return
+        lt = self.layersTable[layerType]
+        table = lt['tableWidget']
+
+        # Get selected lines
+        sm = table.selectionModel()
+        lines = sm.selectedRows()
+        if not lines:
+            return
+
+        # Loop through layers and perform action
+        lr = QgsMapLayerRegistry.instance()
+        for index in lines:
+            row = index.row()
+            layerId = table.item( row, 0 ).data( Qt.EditRole )
+            layer = lr.mapLayer( layerId )
+            if not layer:
+                continue
+
+            # Apply action if compatible
+
+            # Save style as default
+            if key == 'saveStyleAsDefault':
+                layer.saveDefaultStyle()
+
+            # Create spatial index
+            if key == 'createSpatialIndex' and layer.type() == 0:
+                provider = layer.dataProvider()
+                if provider.capabilities() and QgsVectorDataProvider.CreateSpatialIndex:
+                    if not provider.createSpatialIndex():
+                        continue
 
     def commitLayersChanges(self, layerType='vector'):
         '''

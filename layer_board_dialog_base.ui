@@ -254,6 +254,19 @@
                        </widget>
                       </item>
                       <item>
+                       <spacer name="horizontalSpacer">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
                        <widget class="QLineEdit" name="inCrs">
                         <property name="enabled">
                          <bool>true</bool>
@@ -280,19 +293,6 @@
                         </property>
                        </widget>
                       </item>
-                      <item>
-                       <spacer name="horizontalSpacer">
-                        <property name="orientation">
-                         <enum>Qt::Horizontal</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>40</width>
-                          <height>20</height>
-                         </size>
-                        </property>
-                       </spacer>
-                      </item>
                      </layout>
                     </item>
                    </layout>
@@ -305,6 +305,19 @@
                        <string>Max scale</string>
                       </property>
                      </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_2">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
                     </item>
                     <item>
                      <widget class="QSpinBox" name="inMaxScale">
@@ -326,19 +339,6 @@
                       </property>
                      </widget>
                     </item>
-                    <item>
-                     <spacer name="horizontalSpacer_2">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
                    </layout>
                   </item>
                   <item>
@@ -349,6 +349,19 @@
                        <string>Min scale</string>
                       </property>
                      </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_3">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
                     </item>
                     <item>
                      <widget class="QSpinBox" name="inMinScale">
@@ -367,19 +380,6 @@
                       </property>
                      </widget>
                     </item>
-                    <item>
-                     <spacer name="horizontalSpacer_3">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
                    </layout>
                   </item>
                  </layout>
@@ -394,12 +394,19 @@
                   <item>
                    <layout class="QVBoxLayout" name="verticalLayout_8">
                     <item>
-                     <widget class="QPushButton" name="pushButton_2">
+                     <widget class="QPushButton" name="btSaveStyleAsDefault">
                       <property name="enabled">
-                       <bool>false</bool>
+                       <bool>true</bool>
                       </property>
                       <property name="text">
-                       <string>Open layer properties</string>
+                       <string>Save current style as default</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="btCreateSpatialIndex">
+                      <property name="text">
+                       <string>Create spatial index</string>
                       </property>
                      </widget>
                     </item>
@@ -473,7 +480,7 @@
                        <bool>true</bool>
                       </property>
                       <property name="text">
-                       <string>CSV</string>
+                       <string>Comma Separated Values (CSV)</string>
                       </property>
                      </widget>
                     </item>
