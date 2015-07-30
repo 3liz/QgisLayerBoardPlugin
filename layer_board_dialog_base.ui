@@ -398,6 +398,13 @@
                      </widget>
                     </item>
                     <item>
+                     <widget class="QPushButton" name="btRemoveLayer">
+                      <property name="text">
+                       <string>Remove layer</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <spacer name="verticalSpacer_2">
                       <property name="orientation">
                        <enum>Qt::Vertical</enum>
@@ -411,6 +418,22 @@
                      </spacer>
                     </item>
                    </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="groupBox_4">
+                 <property name="title">
+                  <string>Other actions</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_16">
+                  <item>
+                   <widget class="QPushButton" name="btRemoveGhostLayers">
+                    <property name="text">
+                     <string>Remove ghost layers (exist in project file, but not in legend)</string>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>

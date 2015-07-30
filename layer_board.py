@@ -82,7 +82,8 @@ class LayerBoard:
                     {'key': 'minScale', 'editable': True, 'type': 'integer'},
                     {'key': 'extent', 'editable': False},
                     {'key': 'title', 'editable': True, 'type': 'string'},
-                    {'key': 'abstract', 'editable': True, 'type': 'string'}
+                    {'key': 'abstract', 'editable': True, 'type': 'string'},
+                    {'key': 'ghost', 'editable': False, 'type': 'string'}
                 ]
             },
             'vector': {
@@ -278,12 +279,18 @@ class LayerBoard:
             },
             "createSpatialIndex" : {
                 "button" : self.dlg.btCreateSpatialIndex
+            },
+            "removeLayer" : {
+                "button" : self.dlg.btRemoveLayer
             }
         }
         for key, item in self.applyMultipleLayersActions.items():
             control = item['button']
             slot = partial( self.performActionOnSelectedLayers, key )
             control.clicked.connect(slot)
+
+        # Global actions
+        self.dlg.btRemoveGhostLayers.clicked.connect( self.removeGhostLayers )
 
         # Actions when row selection changes
         for layerType, item in self.layersTable.items():
@@ -439,6 +446,10 @@ class LayerBoard:
 
         elif prop == 'abstract':
             return layer.abstract()
+
+        elif prop == 'ghost':
+            isGhost = str( layer not in self.iface.legendInterface().layers() )
+            return isGhost
 
         elif prop == 'crs':
             return layer.crs().authid()
@@ -643,6 +654,8 @@ class LayerBoard:
         if not lines:
             return
 
+        p = QgsProject.instance()
+
         # Loop through layers and perform action
         lr = QgsMapLayerRegistry.instance()
         for index in lines:
@@ -664,6 +677,15 @@ class LayerBoard:
                 if provider.capabilities() and QgsVectorDataProvider.CreateSpatialIndex:
                     if not provider.createSpatialIndex():
                         continue
+
+            # Remove layer from project
+            if key == 'removeLayer':
+                lr.removeMapLayer( layer.id() )
+                # Remove line
+                table.removeRow( row )
+                # Set the dirty flag
+                p.setDirty( True )
+
 
     def commitLayersChanges(self, layerType='vector'):
         '''
@@ -700,6 +722,10 @@ class LayerBoard:
                 if data:
                     self.setLayerProperty( layerType, [layer], prop, data )
                     self.updateLog( '* %s -> %s' % ( prop, data ) )
+
+        # Flag the project as dirty
+        p = QgsProject.instance()
+        p.setDirty( True )
 
         # Repopulate table
         self.populateLayerTable( layerType )
@@ -902,6 +928,32 @@ class LayerBoard:
             QApplication.restoreOverrideCursor()
 
         return msg, status
+
+
+    #################
+    # GLOBAL ACTIONS
+    #################
+
+    def removeGhostLayers(self):
+        '''
+        Remove all ghost layers from project
+        '''
+
+        # Check if the layer is in the map registry but not in the legend
+        lr = QgsMapLayerRegistry.instance()
+        li = self.iface.legendInterface()
+        for lname, layer in lr.mapLayers().items():
+            if not layer in li.layers():
+                lr.removeMapLayer( layer.id() )
+
+        # Set the dirty flag
+        p = QgsProject.instance()
+        p.setDirty( True )
+
+        # Repopulate layers table
+        self.populateLayerTable( 'vector')
+        self.populateLayerTable( 'raster')
+
 
 
     #######
