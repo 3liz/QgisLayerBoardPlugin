@@ -90,7 +90,8 @@ class LayerBoard:
                 'tableWidget': self.dlg.vectorLayers,
                 'attributes': [
                     {'key': 'featureCount', 'editable': False},
-                   {'key': 'source|uri', 'editable': True}
+                    {'key': 'source|uri', 'editable': True},
+                    {'key': 'encoding', 'editable': True}
                 ],
                 'commitButton': self.dlg.btCommitVectorChanges,
                 'discardButton': self.dlg.btDiscardVectorChanges
@@ -252,6 +253,10 @@ class LayerBoard:
             "minScale" : {
                 "button" : self.dlg.btApplyMinScale,
                 "input" : self.dlg.inMinScale
+            },
+            "encoding" : {
+                "button" : self.dlg.btApplyEncoding,
+                "input" : self.dlg.inEncodingList
             }
         }
         for key, item in self.applyMultipleLayersButtons.items():
@@ -300,6 +305,9 @@ class LayerBoard:
                 table = item['tableWidget']
                 sm = table.selectionModel()
                 sm.selectionChanged.connect( slot )
+
+        # Actions when layer tab is changed
+        self.dlg.tabWidget.currentChanged.connect( self.onTabChanged )
 
         # Log
         self.dlg.btClearLog.clicked.connect( self.clearLog )
@@ -470,6 +478,12 @@ class LayerBoard:
         elif prop == 'source|uri':
             return layer.dataProvider().name()+"|"+layer.dataProvider().dataSourceUri().split('|')[0]
 
+        elif prop == 'encoding':
+            enc = None
+            if hasattr( layer.dataProvider(), 'encoding' ):
+                enc = layer.dataProvider().encoding()
+            return enc
+
         # raster
         elif prop == 'width':
             return int( layer.width() )
@@ -525,7 +539,15 @@ class LayerBoard:
         #test if new datasource prop is valid otherwise restore previos data
         if prop == 'source|uri' and not self.newDatasourceIsValid(layer,data):
             table.itemChanged.disconnect()
-            item.setData(Qt.EditRole,self.getLayerProperty(layer, 'source|uri' ))
+            item.setData(Qt.EditRole, self.getLayerProperty( layer, 'source|uri' ) )
+            slot = partial( self.onItemChanged, layerType )
+            table.itemChanged.connect( slot )
+            return
+
+        # Check encoding and revert if problem
+        if prop == 'encoding' and data not in layer.dataProvider().availableEncodings():
+            table.itemChanged.disconnect()
+            item.setData( Qt.EditRole, self.getLayerProperty( layer, 'encoding' ) )
             slot = partial( self.onItemChanged, layerType )
             table.itemChanged.connect( slot )
             return
@@ -576,6 +598,9 @@ class LayerBoard:
             elif prop == 'source|uri':
                 self.setDataSource(layer,data)
 
+            elif prop == 'encoding' and data in layer.dataProvider().availableEncodings():
+                layer.setProviderEncoding( data )
+
             else:
                 continue
 
@@ -605,8 +630,12 @@ class LayerBoard:
         '''
 
         # Value
+        value = None
         widget = self.applyMultipleLayersButtons[key]['input']
-        value = unicode( widget.text() )
+        if hasattr( widget, 'text'):
+            value = unicode( widget.text() )
+        elif hasattr( widget, 'currentText'):
+            value = unicode( widget.currentText() )
         if not value:
             return
 
@@ -955,6 +984,44 @@ class LayerBoard:
         self.populateLayerTable( 'raster')
 
 
+    #####
+    # OTHER
+    #####
+    def populateAvailableEncodingList(self):
+        '''
+        Fill in the encoding list combobox
+        '''
+        cb = self.dlg.inEncodingList
+        # empty combobox
+        cb.clear()
+
+        # add empty item
+        cb.addItem ( '---', -1)
+
+        # Get list of avalaible encodings
+        vl = QgsVectorLayer("Point?crs=epsg:4326", "temp", "memory")
+        enclist = vl.dataProvider().availableEncodings()
+        del vl
+
+        # Add encoding items
+        for enc in enclist:
+            cb.addItem ( enc )
+
+
+    def onTabChanged(self):
+        '''
+        Perform some actions when tab is changed
+        '''
+        layerType = self.getActiveLayerType()
+
+        # Toggle activation of encoding tools
+        isEnabled = layerType == 'vector'
+        self.dlg.encodingLabel.setEnabled( isEnabled )
+        self.dlg.inEncodingList.setEnabled( isEnabled )
+        self.dlg.btApplyEncoding.setEnabled( isEnabled )
+
+        # Toggle create spatial index button
+        self.dlg.btCreateSpatialIndex.setEnabled( isEnabled )
 
     #######
     # RUN
@@ -965,6 +1032,9 @@ class LayerBoard:
         # Popuplate the layers table
         self.populateLayerTable( 'vector')
         self.populateLayerTable( 'raster')
+
+        # Populate the encoding list
+        self.populateAvailableEncodingList()
 
 
         # show the dialog

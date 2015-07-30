@@ -34,8 +34,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>1033</width>
-        <height>461</height>
+        <width>1017</width>
+        <height>466</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -230,83 +230,39 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
                   <item>
-                   <layout class="QVBoxLayout" name="verticalLayout_5">
-                    <item>
-                     <layout class="QHBoxLayout" name="horizontalLayout_3">
-                      <item>
-                       <widget class="QLabel" name="label_2">
-                        <property name="text">
-                         <string>CRS</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <spacer name="horizontalSpacer">
-                        <property name="orientation">
-                         <enum>Qt::Horizontal</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>40</width>
-                          <height>20</height>
-                         </size>
-                        </property>
-                       </spacer>
-                      </item>
-                      <item>
-                       <widget class="QLineEdit" name="inCrs">
-                        <property name="enabled">
-                         <bool>true</bool>
-                        </property>
-                        <property name="readOnly">
-                         <bool>true</bool>
-                        </property>
-                        <property name="placeholderText">
-                         <string/>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QToolButton" name="btDefineProjection">
-                        <property name="text">
-                         <string>...</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QPushButton" name="btApplyCrs">
-                        <property name="text">
-                         <string>set</string>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_5">
-                    <item>
-                     <widget class="QLabel" name="label_4">
+                   <layout class="QGridLayout" name="gridLayout">
+                    <item row="0" column="3">
+                     <widget class="QPushButton" name="btApplyCrs">
                       <property name="text">
-                       <string>Max scale</string>
+                       <string>set</string>
                       </property>
                      </widget>
                     </item>
-                    <item>
-                     <spacer name="horizontalSpacer_2">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
+                    <item row="2" column="1">
+                     <widget class="QSpinBox" name="inMinScale">
+                      <property name="minimum">
+                       <number>1</number>
                       </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
+                      <property name="maximum">
+                       <number>100000000</number>
                       </property>
-                     </spacer>
+                     </widget>
                     </item>
-                    <item>
+                    <item row="0" column="2">
+                     <widget class="QToolButton" name="btDefineProjection">
+                      <property name="text">
+                       <string>...</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="label_2">
+                      <property name="text">
+                       <string>CRS</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
                      <widget class="QSpinBox" name="inMaxScale">
                       <property name="minimum">
                        <number>1</number>
@@ -319,49 +275,59 @@
                       </property>
                      </widget>
                     </item>
-                    <item>
+                    <item row="2" column="3">
+                     <widget class="QPushButton" name="btApplyMinScale">
+                      <property name="text">
+                       <string>set</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="3">
                      <widget class="QPushButton" name="btApplyMaxScale">
                       <property name="text">
                        <string>set</string>
                       </property>
                      </widget>
                     </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_4">
-                    <item>
+                    <item row="2" column="0">
                      <widget class="QLabel" name="label_3">
                       <property name="text">
                        <string>Min scale</string>
                       </property>
                      </widget>
                     </item>
-                    <item>
-                     <spacer name="horizontalSpacer_3">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item>
-                     <widget class="QSpinBox" name="inMinScale">
-                      <property name="minimum">
-                       <number>1</number>
-                      </property>
-                      <property name="maximum">
-                       <number>100000000</number>
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="label_4">
+                      <property name="text">
+                       <string>Max scale</string>
                       </property>
                      </widget>
                     </item>
-                    <item>
-                     <widget class="QPushButton" name="btApplyMinScale">
+                    <item row="0" column="1">
+                     <widget class="QLineEdit" name="inCrs">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                      <property name="placeholderText">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="0">
+                     <widget class="QLabel" name="encodingLabel">
+                      <property name="text">
+                       <string>Encoding</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="1">
+                     <widget class="QComboBox" name="inEncodingList"/>
+                    </item>
+                    <item row="3" column="3">
+                     <widget class="QPushButton" name="btApplyEncoding">
                       <property name="text">
                        <string>set</string>
                       </property>
@@ -455,8 +421,8 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>461</width>
-                    <height>337</height>
+                    <width>453</width>
+                    <height>342</height>
                    </rect>
                   </property>
                  </widget>
