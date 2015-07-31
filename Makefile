@@ -39,15 +39,13 @@ LRELEASE = lrelease-qt4
 SOURCES = \
 	__init__.py \
 	layer_board.py \
-	layer_board_dialog.py \
-	layer_board_engine.py
+	layer_board_dialog.py
 
 PLUGINNAME = LayerBoard
 
 PY_FILES = \
 	layer_board.py \
 	layer_board_dialog.py \
-	layer_board_engine.py \
 	__init__.py
 
 UI_FILES = layer_board_dialog_base.ui

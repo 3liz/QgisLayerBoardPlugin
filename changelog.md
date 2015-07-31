@@ -1,6 +1,11 @@
 Changelog
 ===========
 
+Version 0.5:
+* Add the property 'Encoding' for vector layers
+* Add a button to remove selected layers
+* Add a button to remove all ghost layers ( layers which are in the project XML file, but not in the legend )
+
 Version 0.4: Added 2 main features:
 * Perform actions on multiple layers : save as default style and create spatial index
 * New style tab which allows to see and change style for vector layers
