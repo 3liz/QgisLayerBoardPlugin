@@ -230,7 +230,7 @@ class LayerBoard:
         icon_path = ':/plugins/LayerBoard/icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'Layer properties board'),
+            text=self.tr(u'Layer board'),
             callback=self.run,
             parent=self.iface.mainWindow())
 
@@ -948,7 +948,7 @@ class LayerBoard:
                     csvfile, delimiter=self.csvDelimiter, quotechar=self.csvQuotechar, quoting=self.csvQuoting
                 )
                 writer.writerows( data )
-            msg = QApplication.translate(u"LayerBoard", u"The layer has been successfully exported.")
+            msg = QApplication.translate(u"LayerBoard", u"The layers information table has been successfully exported.")
             status = 'info'
         except OSError, e:
             msg = QApplication.translate("LayerBoard", u"An error occured during layer export." + str(e.error))

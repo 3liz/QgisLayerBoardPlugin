@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1053</width>
-    <height>600</height>
+    <height>692</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,8 +34,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>1018</width>
-        <height>466</height>
+        <width>1033</width>
+        <height>553</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -61,7 +61,7 @@
            <item>
             <widget class="QTabWidget" name="tabWidget">
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <widget class="QWidget" name="tab">
               <attribute name="title">
@@ -108,7 +108,7 @@
                  <item>
                   <widget class="QPushButton" name="btCommitVectorChanges">
                    <property name="text">
-                    <string>Apply changes on vector layers</string>
+                    <string>Apply changes</string>
                    </property>
                    <property name="default">
                     <bool>true</bool>
@@ -161,7 +161,7 @@
                     <bool>false</bool>
                    </property>
                    <property name="text">
-                    <string>Apply changes on raster layers</string>
+                    <string>Apply changes</string>
                    </property>
                    <property name="default">
                     <bool>true</bool>
@@ -341,7 +341,7 @@
                <item>
                 <widget class="QGroupBox" name="groupBox_2">
                  <property name="title">
-                  <string>Actions on selected layer</string>
+                  <string>Actions on selected layers</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_9">
                   <item>
@@ -396,8 +396,11 @@
                  <layout class="QVBoxLayout" name="verticalLayout_16">
                   <item>
                    <widget class="QPushButton" name="btRemoveGhostLayers">
-                    <property name="text">
+                    <property name="toolTip">
                      <string>Remove ghost layers (exist in project file, but not in legend)</string>
+                    </property>
+                    <property name="text">
+                     <string>Remove ghost layers</string>
                     </property>
                    </widget>
                   </item>
@@ -421,8 +424,8 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>499</width>
-                    <height>342</height>
+                    <width>98</width>
+                    <height>28</height>
                    </rect>
                   </property>
                  </widget>
