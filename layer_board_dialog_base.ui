@@ -17,7 +17,7 @@
    <item>
     <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Double-clik on any editable cell to edit the property ( layer name, title, abstract, max and min scales). The changes you make are highlighted. You can also select multiple lines and then use the tools in the right panel to modify the properties for the selected layers at once.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The changes in the table are not automatically applied to the layers. You can apply all the changes at once by using the apply button under the table.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Double-click on any editable cell to edit the property ( layer name, title, abstract, max and min scales). The changes you make are highlighted. You can also select multiple lines and then use the tools in the right panel to modify the properties for the selected layers at once.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The changes in the table are not automatically applied to the layers. You can apply all the changes at once by using the apply button under the table.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -34,7 +34,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>1017</width>
+        <width>1018</width>
         <height>466</height>
        </rect>
       </property>
@@ -421,7 +421,7 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>453</width>
+                    <width>499</width>
                     <height>342</height>
                    </rect>
                   </property>
