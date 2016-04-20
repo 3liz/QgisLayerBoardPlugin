@@ -75,23 +75,24 @@ class LayerBoard:
         self.layersTable =  {
             'generic': {
                 'attributes': [
-                    {'key': 'id', 'editable': False },
-                    {'key': 'name', 'editable': True, 'type': 'string'},
-                    {'key': 'crs', 'editable': False, 'type': 'crs'},
-                    {'key': 'maxScale', 'editable': True, 'type': 'integer'},
-                    {'key': 'minScale', 'editable': True, 'type': 'integer'},
-                    {'key': 'extent', 'editable': False},
-                    {'key': 'title', 'editable': True, 'type': 'string'},
-                    {'key': 'abstract', 'editable': True, 'type': 'string'},
-                    {'key': 'ghost', 'editable': False, 'type': 'string'}
+                    {'key': 'id', 'label': self.tr(u'Id'), 'editable': False },
+                    {'key': 'name', 'label': self.tr(u'Name'), 'editable': True, 'type': 'string'},
+                    {'key': 'crs', 'label': self.tr(u'CRS'), 'editable': False, 'type': 'crs'},
+                    {'key': 'maxScale', 'label': self.tr(u'Max scale'), 'editable': True, 'type': 'integer'},
+                    {'key': 'minScale', 'label': self.tr(u'Min scale'), 'editable': True, 'type': 'integer'},
+                    {'key': 'extent', 'label': self.tr(u'Extent'), 'editable': False},
+                    {'key': 'title', 'label': self.tr(u'Title'), 'editable': True, 'type': 'string'},
+                    {'key': 'abstract', 'label': self.tr(u'Abstract'), 'editable': True, 'type': 'string'},
+                    {'key': 'ghost', 'label': self.tr(u'Ghost ?'), 'editable': False, 'type': 'string'}
                 ]
             },
             'vector': {
                 'tableWidget': self.dlg.vectorLayers,
                 'attributes': [
-                    {'key': 'featureCount', 'editable': False},
-                    {'key': 'source|uri', 'editable': True},
-                    {'key': 'encoding', 'editable': True}
+                    {'key': 'labelsEnabled', 'label': self.tr(u'Labels on'), 'editable': False},
+                    {'key': 'featureCount', 'label': self.tr(u'Features count'), 'editable': False},
+                    {'key': 'source|uri', 'label': self.tr(u'Datasource URI'), 'editable': True},
+                    {'key': 'encoding', 'label': self.tr(u'Encoding'), 'editable': True}
                 ],
                 'commitButton': self.dlg.btCommitVectorChanges,
                 'discardButton': self.dlg.btDiscardVectorChanges
@@ -99,11 +100,11 @@ class LayerBoard:
             'raster': {
                 'tableWidget': self.dlg.rasterLayers,
                 'attributes': [
-                    {'key': 'width', 'editable': False},
-                    {'key': 'height', 'editable': False},
-                    {'key': 'rasterUnitsPerPixelX', 'editable': False},
-                    {'key': 'rasterUnitsPerPixelY', 'editable': False},
-                   {'key': 'uri', 'editable': False}
+                    {'key': 'width', 'label': self.tr(u'Width'), 'editable': False},
+                    {'key': 'height', 'label': self.tr(u'Height'), 'editable': False},
+                    {'key': 'rasterUnitsPerPixelX', 'label': self.tr(u'Units per pixel (X)'), 'editable': False},
+                    {'key': 'rasterUnitsPerPixelY', 'label': self.tr(u'Units per pixel (Y)'), 'editable': False},
+                    {'key': 'uri', 'label': self.tr(u'URI'), 'editable': False}
                 ],
                 'commitButton': self.dlg.btCommitRasterChanges,
                 'discardButton': self.dlg.btDiscardRasterChanges
@@ -380,9 +381,10 @@ class LayerBoard:
 
         # create columns and header row
         columns = [ a['key'] for a in attributes ]
+        columnsLabels = [ a['label'] for a in attributes ]
         colCount = len( columns )
         table.setColumnCount( colCount )
-        table.setHorizontalHeaderLabels( tuple( columns ) )
+        table.setHorizontalHeaderLabels( tuple( columnsLabels ) )
 
         # load content from project layers
         lr = QgsMapLayerRegistry.instance()
@@ -472,6 +474,14 @@ class LayerBoard:
             return int( layer.minimumScale() )
 
         # vector
+        elif prop == 'labelsEnabled':
+            le = False
+            if hasattr( layer, 'labelsEnabled' ):
+                le = layer.labelsEnabled()
+            else:
+                le = layer.hasLabelsEnabled()
+            return le
+
         elif prop == 'featureCount':
             return layer.featureCount()
 
