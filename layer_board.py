@@ -29,6 +29,7 @@ from qgis.gui import *
 from functools import partial
 import csv
 import sys
+import re
 
 # Initialize Qt resources from file resources.py
 import resources_rc
@@ -83,6 +84,7 @@ class LayerBoard:
                     {'key': 'extent', 'label': self.tr(u'Extent'), 'editable': False},
                     {'key': 'title', 'label': self.tr(u'Title'), 'editable': True, 'type': 'string'},
                     {'key': 'abstract', 'label': self.tr(u'Abstract'), 'editable': True, 'type': 'string'},
+                    {'key': 'shortname', 'label': self.tr(u'Short name'), 'editable': True, 'type': 'string'},
                     {'key': 'ghost', 'label': self.tr(u'Ghost ?'), 'editable': False, 'type': 'string'}
                 ]
             },
@@ -457,6 +459,9 @@ class LayerBoard:
         elif prop == 'abstract':
             return layer.abstract()
 
+        elif prop == 'shortname':
+            return layer.shortName()
+
         elif prop == 'ghost':
             isGhost = str( layer not in self.iface.legendInterface().layers() )
             return isGhost
@@ -562,6 +567,14 @@ class LayerBoard:
             table.itemChanged.connect( slot )
             return
 
+        #  Check shortname and modify to remove unwanted chars
+        if prop == 'shortname':
+            table.itemChanged.disconnect()
+            newshortname = re.sub('[^A-Za-z0-9\.-]', '_', data)
+            item.setData( Qt.EditRole, newshortname )
+            slot = partial( self.onItemChanged, layerType )
+            table.itemChanged.connect( slot )
+
         # Store data in global property
         self.layerBoardChangedData[ layerType ][ layerId ][ prop ] = data
 
@@ -587,6 +600,10 @@ class LayerBoard:
 
             elif prop == 'abstract':
                 layer.setAbstract( data )
+
+            elif prop == 'shortname':
+                newshortname = re.sub('[^A-Za-z0-9\.-]', '_', data)
+                layer.setShortName( newshortname )
 
             elif prop == 'maxScale':
                 layer.toggleScaleBasedVisibility( True )

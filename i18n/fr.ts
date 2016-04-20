@@ -12,134 +12,139 @@
 <context>
     <name>LayerBoard</name>
     <message>
-        <location filename="layer_board.py" line="326"/>
+        <location filename="layer_board.py" line="328"/>
         <source>&amp;Layer Board</source>
         <translation>&amp;Layer Board</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="738"/>
+        <location filename="layer_board.py" line="749"/>
         <source>Layer type: </source>
         <translation>Type de couche:</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="850"/>
+        <location filename="layer_board.py" line="861"/>
         <source>Layer Board</source>
         <translation>Layer Board</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="850"/>
+        <location filename="layer_board.py" line="861"/>
         <source>No spatial reference system has been chosen</source>
         <translation>Aucun système de coordonnées n&apos;a été choisi</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="938"/>
+        <location filename="layer_board.py" line="949"/>
         <source>Choose the path where the data must be saved.</source>
         <translation>Choisissez le chemin où enregistrer fichier.</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="940"/>
+        <location filename="layer_board.py" line="951"/>
         <source>No destination file chose. Export canceled.</source>
         <translation>Aucun fichier cible n&apos;a été choisi. L&apos;export est annulé.</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="232"/>
+        <location filename="layer_board.py" line="234"/>
         <source>Layer board</source>
         <translation>Layer Board</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="961"/>
+        <location filename="layer_board.py" line="972"/>
         <source>The layers information table has been successfully exported.</source>
         <translation>Le tableau d&apos;informations sur les couches a bien été exporté.</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="78"/>
+        <location filename="layer_board.py" line="79"/>
         <source>Id</source>
         <translation>Id</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="79"/>
+        <location filename="layer_board.py" line="80"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="80"/>
+        <location filename="layer_board.py" line="81"/>
         <source>CRS</source>
         <translation>SCR</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="81"/>
+        <location filename="layer_board.py" line="82"/>
         <source>Max scale</source>
         <translation>Échelle max</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="82"/>
+        <location filename="layer_board.py" line="83"/>
         <source>Min scale</source>
         <translation>Échelle min</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="83"/>
+        <location filename="layer_board.py" line="84"/>
         <source>Extent</source>
         <translation>Emprise</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="84"/>
+        <location filename="layer_board.py" line="85"/>
         <source>Title</source>
         <translation>Titre</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="85"/>
+        <location filename="layer_board.py" line="86"/>
         <source>Abstract</source>
         <translation>Résumé</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="86"/>
+        <location filename="layer_board.py" line="88"/>
         <source>Ghost ?</source>
         <translation>Fantôme ?</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="92"/>
+        <location filename="layer_board.py" line="94"/>
         <source>Labels on</source>
         <translation>Étiquettes activée</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="93"/>
+        <location filename="layer_board.py" line="95"/>
         <source>Features count</source>
         <translation>Nombre d&apos;objets</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="94"/>
+        <location filename="layer_board.py" line="96"/>
         <source>Datasource URI</source>
         <translation>URI de la donnée</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="95"/>
+        <location filename="layer_board.py" line="97"/>
         <source>Encoding</source>
         <translation>Encodage</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="103"/>
+        <location filename="layer_board.py" line="105"/>
         <source>Width</source>
         <translation>Largeur</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="104"/>
+        <location filename="layer_board.py" line="106"/>
         <source>Height</source>
         <translation>Hauteur</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="105"/>
+        <location filename="layer_board.py" line="107"/>
         <source>Units per pixel (X)</source>
         <translation>Taille du pixel (X)</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="106"/>
+        <location filename="layer_board.py" line="108"/>
         <source>Units per pixel (Y)</source>
         <translation>Taille du pixel (Y)</translation>
     </message>
     <message>
-        <location filename="layer_board.py" line="107"/>
+        <location filename="layer_board.py" line="109"/>
         <source>URI</source>
         <translation>URI</translation>
+    </message>
+    <message>
+        <location filename="layer_board.py" line="87"/>
+        <source>Short name</source>
+        <translation>Nom court (machine)</translation>
     </message>
 </context>
 <context>
