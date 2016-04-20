@@ -11,7 +11,7 @@ name=Layer Board
 qgisMinimumVersion=2.6
 description=View and edit vector and raster properties for the project layers in a table
 about=This plugin helps to see and modify properties for vector and raster layers. It shows the layers in a table sheet, and the user can directly modify some properties such as layer name, title, abstract, minimum and maximum scales. Some actions can be performed on multiple layers at once, such as modifying spatial reference system and scale based visibility. The layers information can be exported to Comma Separated Values (CSV).
-version=0.5
+version=0.6
 author=Michaël DOUCHIN (3liz)
 email=info@3liz.com
 
@@ -21,10 +21,10 @@ email=info@3liz.com
 
 # Uncomment the following line and add your changelog:
 changelog=
-  Version 0.5:
-  * Add the property 'Encoding' for vector layers
-  * Add a button to remove selected layers
-  * Add a button to remove all ghost layers ( layers which are in the project XML file, but not in the legend )
+  Version 0.6:
+  * Add layer shortname property
+  * Add label status for vector layers && translate table headers
+  * Add French translation
 
 # Tags are comma separated with spaces allowed
 tags=layers, properties, table, metadata, report, board, style

@@ -62,8 +62,10 @@ Michaël Douchin ( 3liz )
 
 ## Contributors
 
-Enrico Ferreguti @enricofer
+We would like to thank the following persons for their kind help:
 
+* Enrico Ferreguti @enricofer
+* Thomas Gratier @ThomasG77
 
 ## Licence
 

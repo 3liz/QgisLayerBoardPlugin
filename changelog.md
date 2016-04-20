@@ -1,6 +1,11 @@
 Changelog
 ===========
 
+Version 0.6:
+* Add layer shortname property
+* Add label status for vector layers && translate table headers
+* Add French translation
+
 Version 0.5:
 * Add the property 'Encoding' for vector layers
 * Add a button to remove selected layers
