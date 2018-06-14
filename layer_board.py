@@ -94,7 +94,8 @@ class LayerBoard:
                     {'key': 'labelsEnabled', 'label': self.tr(u'Labels on'), 'editable': False},
                     {'key': 'featureCount', 'label': self.tr(u'Features count'), 'editable': False},
                     {'key': 'source|uri', 'label': self.tr(u'Datasource URI'), 'editable': True},
-                    {'key': 'encoding', 'label': self.tr(u'Encoding'), 'editable': True}
+                    {'key': 'encoding', 'label': self.tr(u'Encoding'), 'editable': True},
+                    {'key': 'styles_in_db', 'label': self.tr(u'Styles in DB'), 'editable': False, 'type': 'string'},
                 ],
                 'commitButton': self.dlg.btCommitVectorChanges,
                 'discardButton': self.dlg.btDiscardVectorChanges
@@ -412,6 +413,7 @@ class LayerBoard:
             # get information
             for attr in attributes:
                 newItem = QTableWidgetItem( )
+                newItem.setToolTip(layer.name())
 
                 # Is editable or not
                 if( attr['editable'] ):
@@ -499,6 +501,13 @@ class LayerBoard:
                 enc = layer.dataProvider().encoding()
             return enc
 
+        elif prop == 'styles_in_db':
+            nb, _, _, _, _ = layer.listStylesInDatabase()
+            if nb < 0:
+                # If the table layer_styles doesn't exist, it returns -1 because the query failed
+                nb = 0
+            return nb
+
         # raster
         elif prop == 'width':
             return int( layer.width() )
@@ -551,7 +560,7 @@ class LayerBoard:
         prop = self.layersAttributes[layerType][col]['key']
         data = table.item( row, col ).data( Qt.EditRole )
 
-        #test if new datasource prop is valid otherwise restore previos data
+        # test if new datasource prop is valid otherwise restore previous data
         if prop == 'source|uri' and not self.newDatasourceIsValid(layer,data):
             table.itemChanged.disconnect()
             item.setData(Qt.EditRole, self.getLayerProperty( layer, 'source|uri' ) )
@@ -580,7 +589,6 @@ class LayerBoard:
 
         # Change cell background
         table.item( row, col ).setBackground( Qt.yellow );
-
 
     def setLayerProperty( self, layerType, layers, prop, data ):
         '''
