@@ -478,7 +478,10 @@ class LayerBoard:
             return int( layer.maximumScale() )
 
         elif prop == 'minScale':
-            return int( layer.minimumScale() )
+            try:
+                return int( layer.minimumScale() )
+            except:
+                return 0
 
         # vector
         elif prop == 'labelsEnabled':
