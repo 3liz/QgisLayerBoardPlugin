@@ -62,8 +62,9 @@ Michaël Douchin ( 3liz )
 
 ## Contributors
 
-Enrico Ferreguti @enricofer
-
+* Enrico Ferreguti @enricofer
+* Etienne Trimaille @Gustry
+* René-Luc D'Hont @rldhont
 
 ## Licence
 

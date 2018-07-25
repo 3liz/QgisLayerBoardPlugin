@@ -1,6 +1,15 @@
 Changelog
 ===========
 
+Version 0.7:
+* [BUGFIX] layer's minScale can be float infinity
+* Add the number of styles and tooltip
+* Add layer shortname property
+* Add label status for vector layers && translate table headers
+* Add French translation
+* Create the translation and translate to French
+
+
 Version 0.5:
 * Add the property 'Encoding' for vector layers
 * Add a button to remove selected layers
