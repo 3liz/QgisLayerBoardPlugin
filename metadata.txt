@@ -12,7 +12,7 @@ qgisMinimumVersion=2.6
 qgisMaximumVersion=2.99
 description=View and edit vector and raster properties for the project layers in a table
 about=This plugin helps to see and modify properties for vector and raster layers. It shows the layers in a table sheet, and the user can directly modify some properties such as layer name, title, abstract, minimum and maximum scales. Some actions can be performed on multiple layers at once, such as modifying spatial reference system and scale based visibility. The layers information can be exported to Comma Separated Values (CSV).
-version=0.7
+version=0.8.0
 author=Michaël DOUCHIN (3liz)
 email=info@3liz.com
 
@@ -22,14 +22,11 @@ email=info@3liz.com
 
 # Uncomment the following line and add your changelog:
 changelog=
-  Version 0.7:
-  * [BUGFIX] layer's minScale can be float infinity
-  * Add the number of styles
-  * Tooltip over a row to display the layer name
-  * Add layer shortname property
-  * Add label status for vector layers && translate table headers
-  * Add French translation
-  * Create the translation and translate to French
+  Version 0.8.0:
+  * [BUGFIX] Fix saving default style for PostgreSQL layers
+  * [BUGFIX] Allow to erase a value when erasing a cell content (ex: abstract = '')
+  * [BUGFIX] Refresh the table correctly when a column order has been set
+  * Add compiled translation files: french now available
 
 # Tags are comma separated with spaces allowed
 tags=layers, properties, table, metadata, report, board, style
