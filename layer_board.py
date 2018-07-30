@@ -736,7 +736,11 @@ class LayerBoard:
 
             # Save style as default
             if key == 'saveStyleAsDefault':
-                layer.saveDefaultStyle()
+                # saveDefaultStyle() does not work in all QGIS 2 versions for postgres layers
+                if layer.providerType() == u'postgres':
+                    layer.saveStyleToDatabase(layer.name(), '', True, None, '')
+                else:
+                    layer.saveDefaultStyle()
 
             # Create spatial index
             if key == 'createSpatialIndex' and layer.type() == 0:
