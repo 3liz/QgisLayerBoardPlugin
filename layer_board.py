@@ -381,6 +381,7 @@ class LayerBoard:
         for row in range(table.rowCount()):
             table.removeRow(row)
         table.setRowCount(0)
+        table.setColumnCount(0)
 
         # create columns and header row
         columns = [ a['key'] for a in attributes ]
@@ -475,7 +476,10 @@ class LayerBoard:
             return layer.extent().toString(2)
 
         elif prop == 'maxScale':
-            return int( layer.maximumScale() )
+            try:
+                return int( layer.maximumScale() )
+            except:
+                return 100000000
 
         elif prop == 'minScale':
             try:
@@ -773,6 +777,7 @@ class LayerBoard:
 
         # Get all layers which have changes
         for layerId, layerData in self.layerBoardChangedData[layerType].items():
+
             # Some layers have an empty changed dictionnary
             if not layerData:
                 continue
@@ -790,7 +795,7 @@ class LayerBoard:
 
             # Get all properties to commit with value
             for prop, data in layerData.items():
-                if data:
+                if data or data == '':
                     self.setLayerProperty( layerType, [layer], prop, data )
                     self.updateLog( '* %s -> %s' % ( prop, data ) )
 
