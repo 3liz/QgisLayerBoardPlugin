@@ -20,8 +20,13 @@
  *                                                                         *
  ***************************************************************************/
 """
+from __future__ import absolute_import
+from builtins import next
+from builtins import str
+from builtins import range
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
+from qgis.PyQt.QtWidgets import QAction, QTableWidgetItem
 from qgis.PyQt.QtXml import *
 from qgis.core import *
 from qgis.gui import *
@@ -32,9 +37,9 @@ import sys
 import re
 
 # Initialize Qt resources from file resources.py
-import resources_rc
+from . import resources_rc
 # Import the code for the dialog
-from layer_board_dialog import LayerBoardDialog
+from .layer_board_dialog import LayerBoardDialog
 import os.path
 import datetime
 
@@ -263,13 +268,13 @@ class LayerBoard:
                 "input" : self.dlg.inEncodingList
             }
         }
-        for key, item in self.applyMultipleLayersButtons.items():
+        for key, item in list(self.applyMultipleLayersButtons.items()):
             control = item['button']
             slot = partial( self.applyPropertyOnSelectedLayers, key )
             control.clicked.connect(slot)
 
         # Apply/Discard changes made on the table
-        for layerType, item in self.layersTable.items():
+        for layerType, item in list(self.layersTable.items()):
             # Commit button
             if 'commitButton' in item:
                 control = item['commitButton']
@@ -293,7 +298,7 @@ class LayerBoard:
                 "button" : self.dlg.btRemoveLayer
             }
         }
-        for key, item in self.applyMultipleLayersActions.items():
+        for key, item in list(self.applyMultipleLayersActions.items()):
             control = item['button']
             slot = partial( self.performActionOnSelectedLayers, key )
             control.clicked.connect(slot)
@@ -302,7 +307,7 @@ class LayerBoard:
         self.dlg.btRemoveGhostLayers.clicked.connect( self.removeGhostLayers )
 
         # Actions when row selection changes
-        for layerType, item in self.layersTable.items():
+        for layerType, item in list(self.layersTable.items()):
             # Style widget
             if layerType in ('vector', 'raster'):
                 slot = partial( self.setSelectedLayerStyleWidget, layerType )
@@ -391,7 +396,7 @@ class LayerBoard:
         table.setHorizontalHeaderLabels( tuple( columnsLabels ) )
 
         # load content from project layers
-        lr = QgsMapLayerRegistry.instance()
+        lr = QgsProject().instance()
         for lid in lr.mapLayers():
             layer = lr.mapLayer( lid )
 
@@ -466,8 +471,9 @@ class LayerBoard:
             return layer.shortName()
 
         elif prop == 'ghost':
-            isGhost = str( layer not in self.iface.legendInterface().layers() )
-            return isGhost
+            # TODO QGIS 3, check ghost layers
+            # isGhost = str( layer not in self.iface.legendInterface().layers() )
+            return str(False)
 
         elif prop == 'crs':
             return layer.crs().authid()
@@ -558,7 +564,7 @@ class LayerBoard:
 
         # Get layer
         layerId = table.item( row, 0 ).data( Qt.EditRole )
-        lr = QgsMapLayerRegistry.instance()
+        lr = QgsProject().instance()
         layer = lr.mapLayer( layerId )
         if not layer:
             return
@@ -675,9 +681,9 @@ class LayerBoard:
         value = None
         widget = self.applyMultipleLayersButtons[key]['input']
         if hasattr( widget, 'text'):
-            value = unicode( widget.text() )
+            value = str( widget.text() )
         elif hasattr( widget, 'currentText'):
-            value = unicode( widget.currentText() )
+            value = str( widget.currentText() )
         if not value:
             return
 
@@ -728,7 +734,7 @@ class LayerBoard:
         p = QgsProject.instance()
 
         # Loop through layers and perform action
-        lr = QgsMapLayerRegistry.instance()
+        lr = QgsProject.instance()
         for index in lines:
             row = index.row()
             layerId = table.item( row, 0 ).data( Qt.EditRole )
@@ -768,7 +774,7 @@ class LayerBoard:
         visible via the different background color
         i.e. apply properties on layers
         '''
-        lr = QgsMapLayerRegistry.instance()
+        lr = QgsProject.instance()
         self.updateLog( '' )
         self.updateLog( '###############' )
         self.updateLog( datetime.datetime.now().strftime("%Y-%m-%d %H:%M") )
@@ -776,7 +782,7 @@ class LayerBoard:
         self.updateLog( '###############' )
 
         # Get all layers which have changes
-        for layerId, layerData in self.layerBoardChangedData[layerType].items():
+        for layerId, layerData in list(self.layerBoardChangedData[layerType].items()):
 
             # Some layers have an empty changed dictionnary
             if not layerData:
@@ -794,7 +800,7 @@ class LayerBoard:
             self.updateLog( '<b>%s</b> ( %s ):' % ( layer.name(), layerId ) )
 
             # Get all properties to commit with value
-            for prop, data in layerData.items():
+            for prop, data in list(layerData.items()):
                 if data or data == '':
                     self.setLayerProperty( layerType, [layer], prop, data )
                     self.updateLog( '* %s -> %s' % ( prop, data ) )
@@ -927,7 +933,7 @@ class LayerBoard:
 
             # Get layer
             layerId = table.item( row, 0 ).data( Qt.EditRole )
-            lr = QgsMapLayerRegistry.instance()
+            lr = QgsProject.instance()
             layer = lr.mapLayer( layerId )
             if not layer:
                 showStyle = False
@@ -972,7 +978,7 @@ class LayerBoard:
         '''
 
         # Cancel if not path given
-        path = QFileDialog.getSaveFileName( self.dlg, QApplication.translate(u"LayerBoard", u"Choose the path where the data must be saved."), '', 'CSV(*.csv)' )
+        path, __, __ = QFileDialog.getSaveFileName( self.dlg, QApplication.translate(u"LayerBoard", u"Choose the path where the data must be saved."), '', 'CSV(*.csv)' )
         if not path:
             msg = QApplication.translate(u"LayerBoard", u"No destination file chose. Export canceled.")
             status = 'info'
@@ -997,7 +1003,7 @@ class LayerBoard:
                 writer.writerows( data )
             msg = QApplication.translate(u"LayerBoard", u"The layers information table has been successfully exported.")
             status = 'info'
-        except OSError, e:
+        except OSError as e:
             msg = QApplication.translate("LayerBoard", u"An error occured during layer export." + str(e.error))
             status = 'critical'
         finally:
@@ -1016,9 +1022,9 @@ class LayerBoard:
         '''
 
         # Check if the layer is in the map registry but not in the legend
-        lr = QgsMapLayerRegistry.instance()
+        lr = QgsProject.instance()
         li = self.iface.legendInterface()
-        for lname, layer in lr.mapLayers().items():
+        for lname, layer in list(lr.mapLayers().items()):
             if not layer in li.layers():
                 lr.removeMapLayer( layer.id() )
 
