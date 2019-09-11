@@ -7,6 +7,7 @@
      (at your option) any later version.
 
 """
+from __future__ import absolute_import
 
 __author__ = 'info@3liz.com'
 __date__ = '2015-05-21'
@@ -14,11 +15,11 @@ __copyright__ = 'Copyright 2015, Michaël DOUCHIN / 3liz'
 
 import unittest
 
-from qgis.PyQt.QtGui import QDialogButtonBox, QDialog
+from qgis.PyQt.QtWidgets import QDialogButtonBox, QDialog
 
 from layer_board_dialog import LayerBoardDialog
 
-from utilities import get_qgis_app
+from .utilities import get_qgis_app
 QGIS_APP = get_qgis_app()
 
 
