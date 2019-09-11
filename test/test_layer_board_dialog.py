@@ -14,7 +14,7 @@ __copyright__ = 'Copyright 2015, Michaël DOUCHIN / 3liz'
 
 import unittest
 
-from PyQt4.QtGui import QDialogButtonBox, QDialog
+from qgis.PyQt.QtGui import QDialogButtonBox, QDialog
 
 from layer_board_dialog import LayerBoardDialog
 
