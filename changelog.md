@@ -1,6 +1,10 @@
 Changelog
 ===========
 
+Version 0.9.0:
+
+* Port the plugin to QGIS 3
+
 Version 0.8.0:
 
 * [BUGFIX] Fix saving default style for PostgreSQL layers
