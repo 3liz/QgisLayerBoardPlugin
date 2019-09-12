@@ -354,15 +354,15 @@ class LayerBoard:
         del self.toolbar
 
     def clearLog(self):
-        '''
+        """
         Clear the log
-        '''
+        """
         self.dlg.txtLog.clear()
 
     def updateLog(self, msg):
-        '''
+        """
         Update the log
-        '''
+        """
         t = self.dlg.txtLog
         t.ensureCursorVisible()
         prefix = '<span style="font-weight:normal;">'
@@ -554,10 +554,10 @@ class LayerBoard:
             return None
 
     def onItemChanged(self, layerType, item):
-        '''
+        """
         Get data when table item content has changed
         And store it for future use
-        '''
+        """
 
         # Get table
         if layerType == 'vector':
@@ -616,9 +616,9 @@ class LayerBoard:
         table.item(row, col).setBackground(Qt.yellow)
 
     def setLayerProperty(self, layerType, layers, prop, data):
-        '''
+        """
         Set properties for a list of layers
-        '''
+        """
 
         for layer in layers:
 
@@ -668,9 +668,9 @@ class LayerBoard:
         self.populateLayerTable(layerType)
 
     def getActiveLayerType(self):
-        '''
+        """
         Get the visible layer type table
-        '''
+        """
         layerType = None
         tab = self.dlg.tabWidget.currentIndex()
         if tab == 0:
@@ -683,10 +683,10 @@ class LayerBoard:
         return layerType
 
     def applyPropertyOnSelectedLayers(self, key):
-        '''
+        """
         Apply changes on selected layers
         for the clicked button key
-        '''
+        """
 
         # Value
         value = None
@@ -723,10 +723,10 @@ class LayerBoard:
             item.setData(Qt.EditRole, value)
 
     def performActionOnSelectedLayers(self, key):
-        '''
+        """
         Perform actions on selected layers
         for the clicked button key
-        '''
+        """
         # Get active table
         layerType = self.getActiveLayerType()
         if not layerType:
@@ -777,11 +777,11 @@ class LayerBoard:
                 p.setDirty(True)
 
     def commitLayersChanges(self, layerType='vector'):
-        '''
+        """
         Commit all the changes made by the user
         visible via the different background color
         i.e. apply properties on layers
-        '''
+        """
         lr = QgsProject.instance()
         self.updateLog('')
         self.updateLog('###############')
@@ -821,16 +821,16 @@ class LayerBoard:
         self.populateLayerTable(layerType)
 
     def discardLayersChanges(self, layerType='vector'):
-        '''
+        """
         Repopulate the table, which also reinitialize the layerBoardChangedData
-        '''
+        """
         # Repopulate table
         self.populateLayerTable(layerType)
 
     def setDataSource(self, layer, newSourceUri):
-        '''
+        """
         Method to apply a new datasource to a vector Layer
-        '''
+        """
         newDS, newUri = self.splitSource(newSourceUri)
         newDatasourceType = newDS or layer.dataProvider().name()
 
@@ -853,9 +853,9 @@ class LayerBoard:
         self.iface.mapCanvas().refresh()
 
     def splitSource(self, source):
-        '''
+        """
         Split QGIS datasource into meaningfull components
-        '''
+        """
         if "|" in source:
             datasourceType = source.split("|")[0]
             uri = source.split("|")[1].replace('\\', '/')
@@ -865,9 +865,9 @@ class LayerBoard:
         return (datasourceType, uri)
 
     def newDatasourceIsValid(self, layer, newDS):
-        '''
+        """
         Probe new datasource to prevent layer issues
-        '''
+        """
         ds, uri = self.splitSource(newDS)
         if not ds:
             # if datasource type is not specified uri is probed with current one
@@ -884,9 +884,9 @@ class LayerBoard:
         return True
 
     def chooseProjection(self):
-        '''
+        """
         Let the user choose a SCR
-        '''
+        """
         # crs Dialog parameters
         header = u"Choose CRS"
         sentence = u""
@@ -914,10 +914,10 @@ class LayerBoard:
     ###########
 
     def setSelectedLayerStyleWidget(self, layerType, selected, unselected):
-        '''
+        """
         Get selected layer and display the corresponding style widget
         in the right panel
-        '''
+        """
         lt = self.layersTable[layerType]
         table = lt['tableWidget']
         sm = table.selectionModel()
@@ -956,9 +956,9 @@ class LayerBoard:
         self.dlg.styleScrollArea.setWidget(w)
 
     def applyStyle(self):
-        '''
+        """
         Apply the style changed in the Style tab to the selected layer
-        '''
+        """
         # Do nothing if no widget or layer
         w = self.styleWidget
         layer = self.styleLayer
@@ -975,10 +975,10 @@ class LayerBoard:
     # EXPORT
     ############
     def exportToCsv(self, layerType):
-        '''
+        """
         Exports the layers information to CSV
 
-        '''
+        """
 
         # Cancel if not path given
         path, __, __ = QFileDialog.getSaveFileName(self.dlg, QApplication.translate(u"LayerBoard", u"Choose the path where the data must be saved."), '', 'CSV(*.csv)')
@@ -1018,9 +1018,9 @@ class LayerBoard:
     #################
 
     def removeGhostLayers(self):
-        '''
+        """
         Remove all ghost layers from project
-        '''
+        """
 
         # Check if the layer is in the map registry but not in the legend
         lr = QgsProject.instance()
@@ -1041,9 +1041,9 @@ class LayerBoard:
     # OTHER
     #####
     def populateAvailableEncodingList(self):
-        '''
+        """
         Fill in the encoding list combobox
-        '''
+        """
         cb = self.dlg.inEncodingList
         # empty combobox
         cb.clear()
@@ -1061,9 +1061,9 @@ class LayerBoard:
             cb.addItem(enc)
 
     def onTabChanged(self):
-        '''
+        """
         Perform some actions when tab is changed
-        '''
+        """
         layerType = self.getActiveLayerType()
 
         # Toggle activation of encoding tools
