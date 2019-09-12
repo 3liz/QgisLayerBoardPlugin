@@ -24,12 +24,29 @@ from __future__ import absolute_import
 from builtins import next
 from builtins import str
 from builtins import range
-from qgis.PyQt.QtCore import *
-from qgis.PyQt.QtGui import *
-from qgis.PyQt.QtWidgets import QAction, QTableWidgetItem
-from qgis.PyQt.QtXml import *
-from qgis.core import *
-from qgis.gui import *
+from qgis.PyQt.QtCore import (
+    QCoreApplication, QSettings, QTranslator, qVersion, Qt
+)
+from qgis.PyQt.QtGui import QIcon, QTextCursor
+from qgis.PyQt.QtWidgets import (
+    QAction,
+    QTableWidgetItem,
+    QLabel,
+    QMessageBox,
+    QFileDialog,
+    QApplication,
+)
+from qgis.PyQt.QtXml import QDomDocument, QDomElement
+from qgis.core import (
+    QgsProject,
+    QgsMapLayer,
+    QgsCoordinateReferenceSystem,
+    QgsVectorDataProvider,
+    QgsVectorLayer,
+    Qgis,
+    QgsStyle,
+)
+from qgis.gui import QgsProjectionSelectionTreeWidget, QgsRendererPropertiesDialog
 
 from functools import partial
 import csv
@@ -72,7 +89,6 @@ class LayerBoard:
 
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
-
 
         # Create the dialog (after translation) and keep reference
         self.dlg = LayerBoardDialog()
@@ -158,7 +174,6 @@ class LayerBoard:
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('LayerBoard', message)
-
 
     def add_action(
         self,
@@ -357,8 +372,7 @@ class LayerBoard:
         c = t.textCursor()
         c.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
         t.setTextCursor(c)
-        qApp.processEvents()
-
+        QCoreApplication.processEvents()
 
     def populateLayerTable( self, layerType ):
         """
@@ -372,8 +386,10 @@ class LayerBoard:
         self.layerBoardChangedData[ layerType ] = {}
 
         # disconnect itemChanged signal
-        try: table.itemChanged.disconnect()
-        except Exception: pass
+        try:
+            table.itemChanged.disconnect()
+        except Exception:
+            pass
 
         attributes = self.layersTable['generic']['attributes'] + lt['attributes']
         self.layersAttributes[ layerType ] = attributes
@@ -601,7 +617,7 @@ class LayerBoard:
         self.layerBoardChangedData[ layerType ][ layerId ][ prop ] = data
 
         # Change cell background
-        table.item( row, col ).setBackground( Qt.yellow );
+        table.item( row, col ).setBackground( Qt.yellow )
 
     def setLayerProperty( self, layerType, layers, prop, data ):
         '''
@@ -868,11 +884,11 @@ class LayerBoard:
             ds = layer.dataProvider().name()
         nlayer = QgsVectorLayer(uri,"probe", ds)
         if not nlayer.isValid():
-            self.iface.messageBar().pushMessage("Error", "incorrect source|uri string: "+newDS, level=QgsMessageBar.CRITICAL, duration=4)
+            self.iface.messageBar().pushMessage("Error", "incorrect source|uri string: "+newDS, level=Qgis.Critical, duration=4)
             self.updateLog("\nERROR: incorrect source|uri string: "+newDS)
             return None
         if nlayer.geometryType() != layer.geometryType():
-            self.iface.messageBar().pushMessage("Error", "geometry type mismatch on new datasource: "+newDS, level=QgsMessageBar.CRITICAL, duration=4)
+            self.iface.messageBar().pushMessage("Error", "geometry type mismatch on new datasource: "+newDS, level=Qgis.Critical, duration=4)
             self.updateLog("\nERROR: geometry type mismatch on new datasource: "+newDS)
             return None
         return True
@@ -884,7 +900,7 @@ class LayerBoard:
         # crs Dialog parameters
         header = u"Choose CRS"
         sentence = u""
-        projSelector = QgsGenericProjectionSelector( self.dlg )
+        projSelector = QgsProjectionSelectionTreeWidget( self.dlg )
         projSelector.setMessage( "<h2>%s</h2>%s" % (header.encode('UTF8'), sentence.encode('UTF8')) )
 
         if projSelector.exec_():
@@ -943,7 +959,7 @@ class LayerBoard:
         if showStyle and layer:
             # Choose widget depending on layer
             if layer.type() == 0 and layer.geometryType() not in [3, 4]:
-                w = QgsRendererV2PropertiesDialog( layer, QgsStyleV2.defaultStyle(), True )
+                w = QgsRendererPropertiesDialog( layer, QgsStyle.defaultStyle(), True )
 
         # Make the widget visible
         self.styleWidget = w
@@ -1089,14 +1105,10 @@ class LayerBoard:
         # Populate the encoding list
         self.populateAvailableEncodingList()
 
-
         # show the dialog
         self.dlg.show()
         # Run the dialog event loop
         result = self.dlg.exec_()
-
-
-
 
         # See if OK was pressed
         if result:
