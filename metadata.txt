@@ -29,7 +29,7 @@ homepage=https://github.com/3liz/QgisLayerBoardPlugin/
 tracker=https://github.com/3liz/QgisLayerBoardPlugin/issues
 repository=https://github.com/3liz/QgisLayerBoardPlugin/
 category=Plugins
-icon=icon.png
+icon=resources/icons/icon.png
 # experimental flag
 experimental=False
 

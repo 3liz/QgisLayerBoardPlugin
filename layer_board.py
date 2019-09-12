@@ -55,9 +55,8 @@ from qgis.core import (
 )
 from qgis.gui import QgsProjectionSelectionTreeWidget, QgsRendererPropertiesDialog
 
-# Initialize Qt resources from file resources.py
-# Import the code for the dialog
 from .layer_board_dialog import LayerBoardDialog
+from .tools import resources_path
 
 
 class LayerBoard:
@@ -250,7 +249,7 @@ class LayerBoard:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = ':/plugins/LayerBoard/icon.png'
+        icon_path = resources_path('icons', 'icon.png')
         self.add_action(
             icon_path,
             text=self.tr('Layer board'),
