@@ -96,26 +96,26 @@ class LayerBoard:
         self.layersTable = {
             'generic': {
                 'attributes': [
-                    {'key': 'id', 'label': self.tr(u'Id'), 'editable': False},
-                    {'key': 'name', 'label': self.tr(u'Name'), 'editable': True, 'type': 'string'},
-                    {'key': 'crs', 'label': self.tr(u'CRS'), 'editable': False, 'type': 'crs'},
-                    {'key': 'maxScale', 'label': self.tr(u'Max scale'), 'editable': True, 'type': 'integer'},
-                    {'key': 'minScale', 'label': self.tr(u'Min scale'), 'editable': True, 'type': 'integer'},
-                    {'key': 'extent', 'label': self.tr(u'Extent'), 'editable': False},
-                    {'key': 'title', 'label': self.tr(u'Title'), 'editable': True, 'type': 'string'},
-                    {'key': 'abstract', 'label': self.tr(u'Abstract'), 'editable': True, 'type': 'string'},
-                    {'key': 'shortname', 'label': self.tr(u'Short name'), 'editable': True, 'type': 'string'},
-                    {'key': 'ghost', 'label': self.tr(u'Ghost ?'), 'editable': False, 'type': 'string'}
+                    {'key': 'id', 'label': self.tr('Id'), 'editable': False},
+                    {'key': 'name', 'label': self.tr('Name'), 'editable': True, 'type': 'string'},
+                    {'key': 'crs', 'label': self.tr('CRS'), 'editable': False, 'type': 'crs'},
+                    {'key': 'maxScale', 'label': self.tr('Max scale'), 'editable': True, 'type': 'integer'},
+                    {'key': 'minScale', 'label': self.tr('Min scale'), 'editable': True, 'type': 'integer'},
+                    {'key': 'extent', 'label': self.tr('Extent'), 'editable': False},
+                    {'key': 'title', 'label': self.tr('Title'), 'editable': True, 'type': 'string'},
+                    {'key': 'abstract', 'label': self.tr('Abstract'), 'editable': True, 'type': 'string'},
+                    {'key': 'shortname', 'label': self.tr('Short name'), 'editable': True, 'type': 'string'},
+                    {'key': 'ghost', 'label': self.tr('Ghost ?'), 'editable': False, 'type': 'string'}
                 ]
             },
             'vector': {
                 'tableWidget': self.dlg.vectorLayers,
                 'attributes': [
-                    {'key': 'labelsEnabled', 'label': self.tr(u'Labels on'), 'editable': False},
-                    {'key': 'featureCount', 'label': self.tr(u'Features count'), 'editable': False},
-                    {'key': 'source|uri', 'label': self.tr(u'Datasource URI'), 'editable': True},
-                    {'key': 'encoding', 'label': self.tr(u'Encoding'), 'editable': True},
-                    {'key': 'styles_in_db', 'label': self.tr(u'Styles in DB'), 'editable': False, 'type': 'string'},
+                    {'key': 'labelsEnabled', 'label': self.tr('Labels on'), 'editable': False},
+                    {'key': 'featureCount', 'label': self.tr('Features count'), 'editable': False},
+                    {'key': 'source|uri', 'label': self.tr('Datasource URI'), 'editable': True},
+                    {'key': 'encoding', 'label': self.tr('Encoding'), 'editable': True},
+                    {'key': 'styles_in_db', 'label': self.tr('Styles in DB'), 'editable': False, 'type': 'string'},
                 ],
                 'commitButton': self.dlg.btCommitVectorChanges,
                 'discardButton': self.dlg.btDiscardVectorChanges
@@ -123,11 +123,11 @@ class LayerBoard:
             'raster': {
                 'tableWidget': self.dlg.rasterLayers,
                 'attributes': [
-                    {'key': 'width', 'label': self.tr(u'Width'), 'editable': False},
-                    {'key': 'height', 'label': self.tr(u'Height'), 'editable': False},
-                    {'key': 'rasterUnitsPerPixelX', 'label': self.tr(u'Units per pixel (X)'), 'editable': False},
-                    {'key': 'rasterUnitsPerPixelY', 'label': self.tr(u'Units per pixel (Y)'), 'editable': False},
-                    {'key': 'uri', 'label': self.tr(u'URI'), 'editable': False}
+                    {'key': 'width', 'label': self.tr('Width'), 'editable': False},
+                    {'key': 'height', 'label': self.tr('Height'), 'editable': False},
+                    {'key': 'rasterUnitsPerPixelX', 'label': self.tr('Units per pixel (X)'), 'editable': False},
+                    {'key': 'rasterUnitsPerPixelY', 'label': self.tr('Units per pixel (Y)'), 'editable': False},
+                    {'key': 'uri', 'label': self.tr('URI'), 'editable': False}
                 ],
                 'commitButton': self.dlg.btCommitRasterChanges,
                 'discardButton': self.dlg.btDiscardRasterChanges
@@ -154,10 +154,10 @@ class LayerBoard:
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&Layer Board')
+        self.menu = self.tr('&Layer Board')
         # TODO: We are going to let the user set this up in a future iteration
-        self.toolbar = self.iface.addToolBar(u'LayerBoard')
-        self.toolbar.setObjectName(u'LayerBoard')
+        self.toolbar = self.iface.addToolBar('LayerBoard')
+        self.toolbar.setObjectName('LayerBoard')
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -253,7 +253,7 @@ class LayerBoard:
         icon_path = ':/plugins/LayerBoard/icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'Layer board'),
+            text=self.tr('Layer board'),
             callback=self.run,
             parent=self.iface.mainWindow())
 
@@ -345,7 +345,7 @@ class LayerBoard:
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
             self.iface.removePluginMenu(
-                self.tr(u'&Layer Board'),
+                self.tr('&Layer Board'),
                 action)
             self.iface.removeToolBarIcon(action)
 
@@ -755,7 +755,7 @@ class LayerBoard:
             # Save style as default
             if key == 'saveStyleAsDefault':
                 # saveDefaultStyle() does not work in all QGIS 2 versions for postgres layers
-                if layer.providerType() == u'postgres':
+                if layer.providerType() == 'postgres':
                     layer.saveStyleToDatabase(layer.name(), '', True, None, '')
                 else:
                     layer.saveDefaultStyle()
@@ -785,7 +785,7 @@ class LayerBoard:
         self.updateLog('')
         self.updateLog('###############')
         self.updateLog(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
-        self.updateLog(self.tr(u'Layer type: ') + layerType)
+        self.updateLog(self.tr('Layer type: ') + layerType)
         self.updateLog('###############')
 
         # Get all layers which have changes
@@ -887,8 +887,8 @@ class LayerBoard:
         Let the user choose a SCR
         """
         # crs Dialog parameters
-        header = u"Choose CRS"
-        sentence = u""
+        header = "Choose CRS"
+        sentence = ""
         projSelector = QgsProjectionSelectionTreeWidget(self.dlg)
         projSelector.setMessage("<h2>%s</h2>%s" % (header.encode('UTF8'), sentence.encode('UTF8')))
 
@@ -897,8 +897,8 @@ class LayerBoard:
             if len(projSelector.selectedAuthId()) == 0:
                 QMessageBox.information(
                     self,
-                    self.tr(u'Layer Board'),
-                    self.tr(u"No spatial reference system has been chosen")
+                    self.tr('Layer Board'),
+                    self.tr("No spatial reference system has been chosen")
                 )
                 return
             else:
@@ -925,7 +925,7 @@ class LayerBoard:
 
         # Empty label widget if style must not been displayed
         w = QLabel()
-        w.setText(u'')
+        w.setText('')
         layer = None
 
         # Refresh Style tab
@@ -980,9 +980,9 @@ class LayerBoard:
         """
 
         # Cancel if not path given
-        path, __, __ = QFileDialog.getSaveFileName(self.dlg, QApplication.translate(u"LayerBoard", u"Choose the path where the data must be saved."), '', 'CSV(*.csv)')
+        path, __, __ = QFileDialog.getSaveFileName(self.dlg, QApplication.translate("LayerBoard", "Choose the path where the data must be saved."), '', 'CSV(*.csv)')
         if not path:
-            msg = QApplication.translate(u"LayerBoard", u"No destination file chose. Export canceled.")
+            msg = QApplication.translate("LayerBoard", "No destination file chose. Export canceled.")
             status = 'info'
             return msg, status
 
@@ -1002,10 +1002,10 @@ class LayerBoard:
                     csvfile, delimiter=self.csvDelimiter, quotechar=self.csvQuotechar, quoting=self.csvQuoting
                 )
                 writer.writerows(data)
-            msg = QApplication.translate(u"LayerBoard", u"The layers information table has been successfully exported.")
+            msg = QApplication.translate("LayerBoard", "The layers information table has been successfully exported.")
             status = 'info'
         except OSError as e:
-            msg = QApplication.translate("LayerBoard", u"An error occured during layer export." + str(e.error))
+            msg = QApplication.translate("LayerBoard", "An error occured during layer export." + str(e.error))
             status = 'critical'
         finally:
             QApplication.restoreOverrideCursor()
