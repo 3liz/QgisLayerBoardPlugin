@@ -94,10 +94,10 @@ class LayerBoard:
         self.dlg = LayerBoardDialog()
 
         # Layers attribute that can be shown and optionally changed in the plugin
-        self.layersTable =  {
+        self.layersTable = {
             'generic': {
                 'attributes': [
-                    {'key': 'id', 'label': self.tr(u'Id'), 'editable': False },
+                    {'key': 'id', 'label': self.tr(u'Id'), 'editable': False},
                     {'key': 'name', 'label': self.tr(u'Name'), 'editable': True, 'type': 'string'},
                     {'key': 'crs', 'label': self.tr(u'CRS'), 'editable': False, 'type': 'crs'},
                     {'key': 'maxScale', 'label': self.tr(u'Max scale'), 'editable': True, 'type': 'integer'},
@@ -176,16 +176,16 @@ class LayerBoard:
         return QCoreApplication.translate('LayerBoard', message)
 
     def add_action(
-        self,
-        icon_path,
-        text,
-        callback,
-        enabled_flag=True,
-        add_to_menu=True,
-        add_to_toolbar=True,
-        status_tip=None,
-        whats_this=None,
-        parent=None):
+            self,
+            icon_path,
+            text,
+            callback,
+            enabled_flag=True,
+            add_to_menu=True,
+            add_to_toolbar=True,
+            status_tip=None,
+            whats_this=None,
+            parent=None):
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -262,30 +262,30 @@ class LayerBoard:
         ###############
 
         # Projection selector
-        self.dlg.btDefineProjection.clicked.connect( self.chooseProjection )
+        self.dlg.btDefineProjection.clicked.connect(self.chooseProjection)
 
         # Right pannel buttons to apply property on several layers
         self.applyMultipleLayersButtons = {
-            "crs" : {
-                "button" : self.dlg.btApplyCrs,
-                "input" : self.dlg.inCrs
+            "crs": {
+                "button": self.dlg.btApplyCrs,
+                "input": self.dlg.inCrs
             },
-            "maxScale" : {
-                "button" : self.dlg.btApplyMaxScale,
-                "input" : self.dlg.inMaxScale
+            "maxScale": {
+                "button": self.dlg.btApplyMaxScale,
+                "input": self.dlg.inMaxScale
             },
-            "minScale" : {
-                "button" : self.dlg.btApplyMinScale,
-                "input" : self.dlg.inMinScale
+            "minScale": {
+                "button": self.dlg.btApplyMinScale,
+                "input": self.dlg.inMinScale
             },
-            "encoding" : {
-                "button" : self.dlg.btApplyEncoding,
-                "input" : self.dlg.inEncodingList
+            "encoding": {
+                "button": self.dlg.btApplyEncoding,
+                "input": self.dlg.inEncodingList
             }
         }
         for key, item in list(self.applyMultipleLayersButtons.items()):
             control = item['button']
-            slot = partial( self.applyPropertyOnSelectedLayers, key )
+            slot = partial(self.applyPropertyOnSelectedLayers, key)
             control.clicked.connect(slot)
 
         # Apply/Discard changes made on the table
@@ -293,55 +293,54 @@ class LayerBoard:
             # Commit button
             if 'commitButton' in item:
                 control = item['commitButton']
-                slot = partial( self.commitLayersChanges, layerType )
+                slot = partial(self.commitLayersChanges, layerType)
                 control.clicked.connect(slot)
             # Discard button
             if 'discardButton' in item:
                 control = item['discardButton']
-                slot = partial( self.discardLayersChanges, layerType )
+                slot = partial(self.discardLayersChanges, layerType)
                 control.clicked.connect(slot)
 
         # Right pannel buttons to perform actions on multiple layers
         self.applyMultipleLayersActions = {
-            "saveStyleAsDefault" : {
-                "button" : self.dlg.btSaveStyleAsDefault
+            "saveStyleAsDefault": {
+                "button": self.dlg.btSaveStyleAsDefault
             },
-            "createSpatialIndex" : {
-                "button" : self.dlg.btCreateSpatialIndex
+            "createSpatialIndex": {
+                "button": self.dlg.btCreateSpatialIndex
             },
-            "removeLayer" : {
-                "button" : self.dlg.btRemoveLayer
+            "removeLayer": {
+                "button": self.dlg.btRemoveLayer
             }
         }
         for key, item in list(self.applyMultipleLayersActions.items()):
             control = item['button']
-            slot = partial( self.performActionOnSelectedLayers, key )
+            slot = partial(self.performActionOnSelectedLayers, key)
             control.clicked.connect(slot)
 
         # Global actions
-        self.dlg.btRemoveGhostLayers.clicked.connect( self.removeGhostLayers )
+        self.dlg.btRemoveGhostLayers.clicked.connect(self.removeGhostLayers)
 
         # Actions when row selection changes
         for layerType, item in list(self.layersTable.items()):
             # Style widget
             if layerType in ('vector', 'raster'):
-                slot = partial( self.setSelectedLayerStyleWidget, layerType )
+                slot = partial(self.setSelectedLayerStyleWidget, layerType)
                 table = item['tableWidget']
                 sm = table.selectionModel()
-                sm.selectionChanged.connect( slot )
+                sm.selectionChanged.connect(slot)
 
         # Actions when layer tab is changed
-        self.dlg.tabWidget.currentChanged.connect( self.onTabChanged )
+        self.dlg.tabWidget.currentChanged.connect(self.onTabChanged)
 
         # Log
-        self.dlg.btClearLog.clicked.connect( self.clearLog )
+        self.dlg.btClearLog.clicked.connect(self.clearLog)
 
         # Export
-        self.dlg.btExportCsv.clicked.connect( self.exportToCsv )
+        self.dlg.btExportCsv.clicked.connect(self.exportToCsv)
 
         # Apply style
-        self.dlg.btApplyStyle.clicked.connect( self.applyStyle )
-
+        self.dlg.btApplyStyle.clicked.connect(self.applyStyle)
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -368,13 +367,13 @@ class LayerBoard:
         t.ensureCursorVisible()
         prefix = '<span style="font-weight:normal;">'
         suffix = '</span>'
-        t.append( '%s %s %s' % (prefix, msg, suffix) )
+        t.append('%s %s %s' % (prefix, msg, suffix))
         c = t.textCursor()
         c.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
         t.setTextCursor(c)
         QCoreApplication.processEvents()
 
-    def populateLayerTable( self, layerType ):
+    def populateLayerTable(self, layerType):
         """
         Fill the table for a given layer type
         """
@@ -383,7 +382,7 @@ class LayerBoard:
         table = lt['tableWidget']
 
         # Reset layerBoardChangedData
-        self.layerBoardChangedData[ layerType ] = {}
+        self.layerBoardChangedData[layerType] = {}
 
         # disconnect itemChanged signal
         try:
@@ -392,11 +391,11 @@ class LayerBoard:
             pass
 
         attributes = self.layersTable['generic']['attributes'] + lt['attributes']
-        self.layersAttributes[ layerType ] = attributes
+        self.layersAttributes[layerType] = attributes
 
-        self.layerBoardData[ layerType ] = []
-        headerData = [ a['key'] for a in attributes ]
-        self.layerBoardData[ layerType ].append( headerData )
+        self.layerBoardData[layerType] = []
+        headerData = [a['key'] for a in attributes]
+        self.layerBoardData[layerType].append(headerData)
 
         # empty previous content
         for row in range(table.rowCount()):
@@ -405,16 +404,16 @@ class LayerBoard:
         table.setColumnCount(0)
 
         # create columns and header row
-        columns = [ a['key'] for a in attributes ]
-        columnsLabels = [ a['label'] for a in attributes ]
-        colCount = len( columns )
-        table.setColumnCount( colCount )
-        table.setHorizontalHeaderLabels( tuple( columnsLabels ) )
+        columns = [a['key'] for a in attributes]
+        columnsLabels = [a['label'] for a in attributes]
+        colCount = len(columns)
+        table.setColumnCount(colCount)
+        table.setHorizontalHeaderLabels(tuple(columnsLabels))
 
         # load content from project layers
         lr = QgsProject().instance()
         for lid in lr.mapLayers():
-            layer = lr.mapLayer( lid )
+            layer = lr.mapLayer(lid)
 
             if layerType == 'vector' and layer.type() != QgsMapLayer.VectorLayer:
                 continue
@@ -422,51 +421,49 @@ class LayerBoard:
                 continue
 
             # Add layer in the layerBoardChangedData
-            self.layerBoardChangedData[ layerType ][ lid ] = {}
+            self.layerBoardChangedData[layerType][lid] = {}
             lineData = []
 
             # Set row and column count
             twRowCount = table.rowCount()
             # add a new line
-            table.setRowCount( twRowCount + 1 )
-            table.setColumnCount( colCount )
-            i=0
+            table.setRowCount(twRowCount + 1)
+            table.setColumnCount(colCount)
+            i = 0
 
             # get information
             for attr in attributes:
-                newItem = QTableWidgetItem( )
+                newItem = QTableWidgetItem()
                 newItem.setToolTip(layer.name())
 
                 # Is editable or not
-                if( attr['editable'] ):
-                    newItem.setFlags( Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsEnabled )
+                if (attr['editable']):
+                    newItem.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsEnabled)
                 else:
-                    newItem.setFlags( Qt.ItemIsSelectable  )
+                    newItem.setFlags(Qt.ItemIsSelectable)
 
                 # Item value
-                value = self.getLayerProperty( layer, attr['key'] )
-                newItem.setData( Qt.EditRole, value )
+                value = self.getLayerProperty(layer, attr['key'])
+                newItem.setData(Qt.EditRole, value)
 
                 # Add cell data to lineData
                 # encode it in the file system encoding, only if needed
-                if hasattr( value, 'encode' ):
-                    value = value.encode( sys.getfilesystemencoding() )
-                lineData.append( value )
+                if hasattr(value, 'encode'):
+                    value = value.encode(sys.getfilesystemencoding())
+                lineData.append(value)
 
                 # Add item
                 table.setItem(twRowCount, i, newItem)
-                i+=1
+                i += 1
 
             # Add data to layerBoardData
-            self.layerBoardData[ layerType ].append( lineData )
-
+            self.layerBoardData[layerType].append(lineData)
 
         # Launch slot on item changed slot
-        slot = partial( self.onItemChanged, layerType )
-        table.itemChanged.connect( slot )
+        slot = partial(self.onItemChanged, layerType)
+        table.itemChanged.connect(slot)
 
-
-    def getLayerProperty( self, layer, prop ):
+    def getLayerProperty(self, layer, prop):
         """
         Get a layer property
         """
@@ -499,20 +496,20 @@ class LayerBoard:
 
         elif prop == 'maxScale':
             try:
-                return int( layer.maximumScale() )
+                return int(layer.maximumScale())
             except:
                 return 100000000
 
         elif prop == 'minScale':
             try:
-                return int( layer.minimumScale() )
+                return int(layer.minimumScale())
             except:
                 return 0
 
         # vector
         elif prop == 'labelsEnabled':
             le = False
-            if hasattr( layer, 'labelsEnabled' ):
+            if hasattr(layer, 'labelsEnabled'):
                 le = layer.labelsEnabled()
             else:
                 le = layer.hasLabelsEnabled()
@@ -522,11 +519,11 @@ class LayerBoard:
             return layer.featureCount()
 
         elif prop == 'source|uri':
-            return layer.dataProvider().name()+"|"+layer.dataProvider().dataSourceUri().split('|')[0]
+            return layer.dataProvider().name() + "|" + layer.dataProvider().dataSourceUri().split('|')[0]
 
         elif prop == 'encoding':
             enc = None
-            if hasattr( layer.dataProvider(), 'encoding' ):
+            if hasattr(layer.dataProvider(), 'encoding'):
                 enc = layer.dataProvider().encoding()
             return enc
 
@@ -539,16 +536,16 @@ class LayerBoard:
 
         # raster
         elif prop == 'width':
-            return int( layer.width() )
+            return int(layer.width())
 
         elif prop == 'height':
-            return int( layer.height() )
+            return int(layer.height())
 
         elif prop == 'rasterUnitsPerPixelX':
-            return int( layer.rasterUnitsPerPixelX() )
+            return int(layer.rasterUnitsPerPixelX())
 
         elif prop == 'rasterUnitsPerPixelY':
-            return int( layer.rasterUnitsPerPixelY() )
+            return int(layer.rasterUnitsPerPixelY())
 
         elif prop == 'uri':
             return layer.dataProvider().dataSourceUri().split('|')[0]
@@ -556,8 +553,7 @@ class LayerBoard:
         else:
             return None
 
-
-    def onItemChanged( self, layerType, item ):
+    def onItemChanged(self, layerType, item):
         '''
         Get data when table item content has changed
         And store it for future use
@@ -579,47 +575,47 @@ class LayerBoard:
         table.clearSelection()
 
         # Get layer
-        layerId = table.item( row, 0 ).data( Qt.EditRole )
+        layerId = table.item(row, 0).data(Qt.EditRole)
         lr = QgsProject().instance()
-        layer = lr.mapLayer( layerId )
+        layer = lr.mapLayer(layerId)
         if not layer:
             return
 
         # Get changed property
         prop = self.layersAttributes[layerType][col]['key']
-        data = table.item( row, col ).data( Qt.EditRole )
+        data = table.item(row, col).data(Qt.EditRole)
 
         # test if new datasource prop is valid otherwise restore previous data
-        if prop == 'source|uri' and not self.newDatasourceIsValid(layer,data):
+        if prop == 'source|uri' and not self.newDatasourceIsValid(layer, data):
             table.itemChanged.disconnect()
-            item.setData(Qt.EditRole, self.getLayerProperty( layer, 'source|uri' ) )
-            slot = partial( self.onItemChanged, layerType )
-            table.itemChanged.connect( slot )
+            item.setData(Qt.EditRole, self.getLayerProperty(layer, 'source|uri'))
+            slot = partial(self.onItemChanged, layerType)
+            table.itemChanged.connect(slot)
             return
 
         # Check encoding and revert if problem
         if prop == 'encoding' and data not in layer.dataProvider().availableEncodings():
             table.itemChanged.disconnect()
-            item.setData( Qt.EditRole, self.getLayerProperty( layer, 'encoding' ) )
-            slot = partial( self.onItemChanged, layerType )
-            table.itemChanged.connect( slot )
+            item.setData(Qt.EditRole, self.getLayerProperty(layer, 'encoding'))
+            slot = partial(self.onItemChanged, layerType)
+            table.itemChanged.connect(slot)
             return
 
         #  Check shortname and modify to remove unwanted chars
         if prop == 'shortname':
             table.itemChanged.disconnect()
             newshortname = re.sub('[^A-Za-z0-9\.-]', '_', data)
-            item.setData( Qt.EditRole, newshortname )
-            slot = partial( self.onItemChanged, layerType )
-            table.itemChanged.connect( slot )
+            item.setData(Qt.EditRole, newshortname)
+            slot = partial(self.onItemChanged, layerType)
+            table.itemChanged.connect(slot)
 
         # Store data in global property
-        self.layerBoardChangedData[ layerType ][ layerId ][ prop ] = data
+        self.layerBoardChangedData[layerType][layerId][prop] = data
 
         # Change cell background
-        table.item( row, col ).setBackground( Qt.yellow )
+        table.item(row, col).setBackground(Qt.yellow)
 
-    def setLayerProperty( self, layerType, layers, prop, data ):
+    def setLayerProperty(self, layerType, layers, prop, data):
         '''
         Set properties for a list of layers
         '''
@@ -630,48 +626,48 @@ class LayerBoard:
                 continue
 
             if prop == 'name':
-                layer.setLayerName( str(data) )
+                layer.setLayerName(str(data))
 
             elif prop == 'title':
-                layer.setTitle( data )
+                layer.setTitle(data)
 
             elif prop == 'abstract':
-                layer.setAbstract( data )
+                layer.setAbstract(data)
 
             elif prop == 'shortname':
                 newshortname = re.sub('[^A-Za-z0-9\.-]', '_', data)
-                layer.setShortName( newshortname )
+                layer.setShortName(newshortname)
 
             elif prop == 'maxScale':
-                layer.toggleScaleBasedVisibility( True )
-                layer.setMaximumScale( float(data) )
+                layer.toggleScaleBasedVisibility(True)
+                layer.setMaximumScale(float(data))
                 layer.triggerRepaint()
 
             elif prop == 'minScale':
-                layer.toggleScaleBasedVisibility( True )
-                layer.setMinimumScale( float(data) )
+                layer.toggleScaleBasedVisibility(True)
+                layer.setMinimumScale(float(data))
                 layer.triggerRepaint()
 
             elif prop == 'crs':
                 qcrs = QgsCoordinateReferenceSystem()
-                qcrs.createFromOgcWmsCrs( data )
+                qcrs.createFromOgcWmsCrs(data)
                 if qcrs:
                     layer.setCrs(qcrs)
                     layer.triggerRepaint()
 
             elif prop == 'source|uri':
-                self.setDataSource(layer,data)
+                self.setDataSource(layer, data)
 
             elif prop == 'encoding' and data in layer.dataProvider().availableEncodings():
-                layer.setProviderEncoding( data )
+                layer.setProviderEncoding(data)
 
             else:
                 continue
 
         # Refresh table
-        self.populateLayerTable( layerType )
+        self.populateLayerTable(layerType)
 
-    def getActiveLayerType( self ):
+    def getActiveLayerType(self):
         '''
         Get the visible layer type table
         '''
@@ -686,7 +682,6 @@ class LayerBoard:
 
         return layerType
 
-
     def applyPropertyOnSelectedLayers(self, key):
         '''
         Apply changes on selected layers
@@ -696,10 +691,10 @@ class LayerBoard:
         # Value
         value = None
         widget = self.applyMultipleLayersButtons[key]['input']
-        if hasattr( widget, 'text'):
-            value = str( widget.text() )
-        elif hasattr( widget, 'currentText'):
-            value = str( widget.currentText() )
+        if hasattr(widget, 'text'):
+            value = str(widget.text())
+        elif hasattr(widget, 'currentText'):
+            value = str(widget.currentText())
         if not value:
             return
 
@@ -717,17 +712,15 @@ class LayerBoard:
             return
 
         # Get column for the key
-        col = next(index for (index, d) in enumerate(self.layersAttributes[ layerType ]) if d['key'] == key)
+        col = next(index for (index, d) in enumerate(self.layersAttributes[layerType]) if d['key'] == key)
         if not col:
             return
 
         # Modify values for each line
         for index in lines:
             row = index.row()
-            item = table.item( row, col )
-            item.setData( Qt.EditRole, value )
-
-
+            item = table.item(row, col)
+            item.setData(Qt.EditRole, value)
 
     def performActionOnSelectedLayers(self, key):
         '''
@@ -753,8 +746,8 @@ class LayerBoard:
         lr = QgsProject.instance()
         for index in lines:
             row = index.row()
-            layerId = table.item( row, 0 ).data( Qt.EditRole )
-            layer = lr.mapLayer( layerId )
+            layerId = table.item(row, 0).data(Qt.EditRole)
+            layer = lr.mapLayer(layerId)
             if not layer:
                 continue
 
@@ -777,12 +770,11 @@ class LayerBoard:
 
             # Remove layer from project
             if key == 'removeLayer':
-                lr.removeMapLayer( layer.id() )
+                lr.removeMapLayer(layer.id())
                 # Remove line
-                table.removeRow( row )
+                table.removeRow(row)
                 # Set the dirty flag
-                p.setDirty( True )
-
+                p.setDirty(True)
 
     def commitLayersChanges(self, layerType='vector'):
         '''
@@ -791,11 +783,11 @@ class LayerBoard:
         i.e. apply properties on layers
         '''
         lr = QgsProject.instance()
-        self.updateLog( '' )
-        self.updateLog( '###############' )
-        self.updateLog( datetime.datetime.now().strftime("%Y-%m-%d %H:%M") )
-        self.updateLog( self.tr( u'Layer type: ' ) +  layerType )
-        self.updateLog( '###############' )
+        self.updateLog('')
+        self.updateLog('###############')
+        self.updateLog(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
+        self.updateLog(self.tr(u'Layer type: ') + layerType)
+        self.updateLog('###############')
 
         # Get all layers which have changes
         for layerId, layerData in list(self.layerBoardChangedData[layerType].items()):
@@ -805,38 +797,37 @@ class LayerBoard:
                 continue
 
             # Get QGIS layer
-            layer = lr.mapLayer( layerId )
+            layer = lr.mapLayer(layerId)
             if not layer:
                 # Reset layer data
-                self.layerBoardChangedData[ layerType ][ layerId ] = {}
+                self.layerBoardChangedData[layerType][layerId] = {}
                 continue
 
             # Log
-            self.updateLog( '' )
-            self.updateLog( '<b>%s</b> ( %s ):' % ( layer.name(), layerId ) )
+            self.updateLog('')
+            self.updateLog('<b>%s</b> ( %s ):' % (layer.name(), layerId))
 
             # Get all properties to commit with value
             for prop, data in list(layerData.items()):
                 if data or data == '':
-                    self.setLayerProperty( layerType, [layer], prop, data )
-                    self.updateLog( '* %s -> %s' % ( prop, data ) )
+                    self.setLayerProperty(layerType, [layer], prop, data)
+                    self.updateLog('* %s -> %s' % (prop, data))
 
         # Flag the project as dirty
         p = QgsProject.instance()
-        p.setDirty( True )
+        p.setDirty(True)
 
         # Repopulate table
-        self.populateLayerTable( layerType )
+        self.populateLayerTable(layerType)
 
     def discardLayersChanges(self, layerType='vector'):
         '''
         Repopulate the table, which also reinitialize the layerBoardChangedData
         '''
         # Repopulate table
-        self.populateLayerTable( layerType )
+        self.populateLayerTable(layerType)
 
-
-    def setDataSource(self,layer,newSourceUri):
+    def setDataSource(self, layer, newSourceUri):
         '''
         Method to apply a new datasource to a vector Layer
         '''
@@ -849,7 +840,7 @@ class LayerBoard:
         XMLMapLayers = XMLDocument.createElement("maplayers")
         XMLMapLayer = QDomElement()
         XMLMapLayer = XMLDocument.createElement("maplayer")
-        layer.writeLayerXML(XMLMapLayer,XMLDocument)
+        layer.writeLayerXML(XMLMapLayer, XMLDocument)
 
         # apply layer definition
         XMLMapLayer.firstChildElement("datasource").firstChild().setNodeValue(newUri)
@@ -861,35 +852,34 @@ class LayerBoard:
         self.iface.actionDraw().trigger()
         self.iface.mapCanvas().refresh()
 
-    def splitSource (self,source):
+    def splitSource(self, source):
         '''
         Split QGIS datasource into meaningfull components
         '''
         if "|" in source:
             datasourceType = source.split("|")[0]
-            uri = source.split("|")[1].replace('\\','/')
+            uri = source.split("|")[1].replace('\\', '/')
         else:
             datasourceType = None
-            uri = source.replace('\\','/')
-        return (datasourceType,uri)
+            uri = source.replace('\\', '/')
+        return (datasourceType, uri)
 
-
-    def newDatasourceIsValid(self,layer,newDS):
+    def newDatasourceIsValid(self, layer, newDS):
         '''
         Probe new datasource to prevent layer issues
         '''
-        ds,uri = self.splitSource(newDS)
+        ds, uri = self.splitSource(newDS)
         if not ds:
             # if datasource type is not specified uri is probed with current one
             ds = layer.dataProvider().name()
-        nlayer = QgsVectorLayer(uri,"probe", ds)
+        nlayer = QgsVectorLayer(uri, "probe", ds)
         if not nlayer.isValid():
-            self.iface.messageBar().pushMessage("Error", "incorrect source|uri string: "+newDS, level=Qgis.Critical, duration=4)
-            self.updateLog("\nERROR: incorrect source|uri string: "+newDS)
+            self.iface.messageBar().pushMessage("Error", "incorrect source|uri string: " + newDS, level=Qgis.Critical, duration=4)
+            self.updateLog("\nERROR: incorrect source|uri string: " + newDS)
             return None
         if nlayer.geometryType() != layer.geometryType():
-            self.iface.messageBar().pushMessage("Error", "geometry type mismatch on new datasource: "+newDS, level=Qgis.Critical, duration=4)
-            self.updateLog("\nERROR: geometry type mismatch on new datasource: "+newDS)
+            self.iface.messageBar().pushMessage("Error", "geometry type mismatch on new datasource: " + newDS, level=Qgis.Critical, duration=4)
+            self.updateLog("\nERROR: geometry type mismatch on new datasource: " + newDS)
             return None
         return True
 
@@ -900,12 +890,12 @@ class LayerBoard:
         # crs Dialog parameters
         header = u"Choose CRS"
         sentence = u""
-        projSelector = QgsProjectionSelectionTreeWidget( self.dlg )
-        projSelector.setMessage( "<h2>%s</h2>%s" % (header.encode('UTF8'), sentence.encode('UTF8')) )
+        projSelector = QgsProjectionSelectionTreeWidget(self.dlg)
+        projSelector.setMessage("<h2>%s</h2>%s" % (header.encode('UTF8'), sentence.encode('UTF8')))
 
         if projSelector.exec_():
-            self.crs = QgsCoordinateReferenceSystem( projSelector.selectedCrsId(), QgsCoordinateReferenceSystem.InternalCrsId )
-            if len( projSelector.selectedAuthId() ) == 0:
+            self.crs = QgsCoordinateReferenceSystem(projSelector.selectedCrsId(), QgsCoordinateReferenceSystem.InternalCrsId)
+            if len(projSelector.selectedAuthId()) == 0:
                 QMessageBox.information(
                     self,
                     self.tr(u'Layer Board'),
@@ -914,11 +904,10 @@ class LayerBoard:
                 return
             else:
                 self.dlg.inCrs.clear()
-                self.dlg.inCrs.setText( self.crs.authid() )
+                self.dlg.inCrs.setText(self.crs.authid())
 
         else:
             return
-
 
     ###########
     # STYLE
@@ -937,20 +926,20 @@ class LayerBoard:
 
         # Empty label widget if style must not been displayed
         w = QLabel()
-        w.setText( u'' )
+        w.setText(u'')
         layer = None
 
         # Refresh Style tab
-        if len( lines ) != 1:
+        if len(lines) != 1:
             showStyle = False
 
         if showStyle:
             row = lines[0].row()
 
             # Get layer
-            layerId = table.item( row, 0 ).data( Qt.EditRole )
+            layerId = table.item(row, 0).data(Qt.EditRole)
             lr = QgsProject.instance()
-            layer = lr.mapLayer( layerId )
+            layer = lr.mapLayer(layerId)
             if not layer:
                 showStyle = False
             else:
@@ -959,30 +948,28 @@ class LayerBoard:
         if showStyle and layer:
             # Choose widget depending on layer
             if layer.type() == 0 and layer.geometryType() not in [3, 4]:
-                w = QgsRendererPropertiesDialog( layer, QgsStyle.defaultStyle(), True )
+                w = QgsRendererPropertiesDialog(layer, QgsStyle.defaultStyle(), True)
 
         # Make the widget visible
         self.styleWidget = w
         self.styleLayer = layer
-        self.dlg.styleScrollArea.setWidget( w )
+        self.dlg.styleScrollArea.setWidget(w)
 
-
-    def applyStyle( self ):
+    def applyStyle(self):
         '''
         Apply the style changed in the Style tab to the selected layer
         '''
         # Do nothing if no widget or layer
         w = self.styleWidget
         layer = self.styleLayer
-        if not w or not layer or not hasattr( w , 'apply' ):
+        if not w or not layer or not hasattr(w, 'apply'):
             return
 
         # Apply the new renderer to the layer
         w.apply()
         if hasattr(layer, "setCacheImage"):
-            layer.setCacheImage( None )
+            layer.setCacheImage(None)
         layer.triggerRepaint()
-
 
     ############
     # EXPORT
@@ -994,12 +981,11 @@ class LayerBoard:
         '''
 
         # Cancel if not path given
-        path, __, __ = QFileDialog.getSaveFileName( self.dlg, QApplication.translate(u"LayerBoard", u"Choose the path where the data must be saved."), '', 'CSV(*.csv)' )
+        path, __, __ = QFileDialog.getSaveFileName(self.dlg, QApplication.translate(u"LayerBoard", u"Choose the path where the data must be saved."), '', 'CSV(*.csv)')
         if not path:
             msg = QApplication.translate(u"LayerBoard", u"No destination file chose. Export canceled.")
             status = 'info'
             return msg, status
-
 
         # Get active table
         layerType = self.getActiveLayerType()
@@ -1007,16 +993,16 @@ class LayerBoard:
             return
 
         # Get layer data
-        data = self.layerBoardData[ layerType ]
+        data = self.layerBoardData[layerType]
 
         # Write data into CSV file
         try:
             QApplication.setOverrideCursor(Qt.WaitCursor)
-            with open( path, 'wb' ) as csvfile:
+            with open(path, 'wb') as csvfile:
                 writer = csv.writer(
                     csvfile, delimiter=self.csvDelimiter, quotechar=self.csvQuotechar, quoting=self.csvQuoting
                 )
-                writer.writerows( data )
+                writer.writerows(data)
             msg = QApplication.translate(u"LayerBoard", u"The layers information table has been successfully exported.")
             status = 'info'
         except OSError as e:
@@ -1026,7 +1012,6 @@ class LayerBoard:
             QApplication.restoreOverrideCursor()
 
         return msg, status
-
 
     #################
     # GLOBAL ACTIONS
@@ -1042,16 +1027,15 @@ class LayerBoard:
         li = self.iface.legendInterface()
         for lname, layer in list(lr.mapLayers().items()):
             if not layer in li.layers():
-                lr.removeMapLayer( layer.id() )
+                lr.removeMapLayer(layer.id())
 
         # Set the dirty flag
         p = QgsProject.instance()
-        p.setDirty( True )
+        p.setDirty(True)
 
         # Repopulate layers table
-        self.populateLayerTable( 'vector')
-        self.populateLayerTable( 'raster')
-
+        self.populateLayerTable('vector')
+        self.populateLayerTable('raster')
 
     #####
     # OTHER
@@ -1065,7 +1049,7 @@ class LayerBoard:
         cb.clear()
 
         # add empty item
-        cb.addItem ( '---', -1)
+        cb.addItem('---', -1)
 
         # Get list of avalaible encodings
         vl = QgsVectorLayer("Point?crs=epsg:4326", "temp", "memory")
@@ -1074,8 +1058,7 @@ class LayerBoard:
 
         # Add encoding items
         for enc in enclist:
-            cb.addItem ( enc )
-
+            cb.addItem(enc)
 
     def onTabChanged(self):
         '''
@@ -1085,12 +1068,12 @@ class LayerBoard:
 
         # Toggle activation of encoding tools
         isEnabled = layerType == 'vector'
-        self.dlg.encodingLabel.setEnabled( isEnabled )
-        self.dlg.inEncodingList.setEnabled( isEnabled )
-        self.dlg.btApplyEncoding.setEnabled( isEnabled )
+        self.dlg.encodingLabel.setEnabled(isEnabled)
+        self.dlg.inEncodingList.setEnabled(isEnabled)
+        self.dlg.btApplyEncoding.setEnabled(isEnabled)
 
         # Toggle create spatial index button
-        self.dlg.btCreateSpatialIndex.setEnabled( isEnabled )
+        self.dlg.btCreateSpatialIndex.setEnabled(isEnabled)
 
     #######
     # RUN
@@ -1099,8 +1082,8 @@ class LayerBoard:
         """Run method that performs all the real work"""
 
         # Popuplate the layers table
-        self.populateLayerTable( 'vector')
-        self.populateLayerTable( 'raster')
+        self.populateLayerTable('vector')
+        self.populateLayerTable('raster')
 
         # Populate the encoding list
         self.populateAvailableEncodingList()
