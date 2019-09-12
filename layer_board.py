@@ -21,9 +21,17 @@
  ***************************************************************************/
 """
 from __future__ import absolute_import
+
+import csv
+import datetime
+import os.path
+import re
+import sys
 from builtins import next
-from builtins import str
 from builtins import range
+from builtins import str
+from functools import partial
+
 from qgis.PyQt.QtCore import (
     QCoreApplication, QSettings, QTranslator, qVersion, Qt
 )
@@ -48,17 +56,9 @@ from qgis.core import (
 )
 from qgis.gui import QgsProjectionSelectionTreeWidget, QgsRendererPropertiesDialog
 
-from functools import partial
-import csv
-import sys
-import re
-
 # Initialize Qt resources from file resources.py
-from . import resources_rc
 # Import the code for the dialog
 from .layer_board_dialog import LayerBoardDialog
-import os.path
-import datetime
 
 
 class LayerBoard:
