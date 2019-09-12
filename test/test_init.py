@@ -1,4 +1,3 @@
-# coding=utf-8
 """Tests QGIS plugin init."""
 
 from future import standard_library
