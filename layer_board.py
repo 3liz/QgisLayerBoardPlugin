@@ -47,6 +47,7 @@ from qgis.PyQt.QtXml import QDomDocument, QDomElement
 from qgis.core import (
     QgsProject,
     QgsMapLayer,
+    QgsMapLayerModel,
     QgsCoordinateReferenceSystem,
     QgsVectorDataProvider,
     QgsVectorLayer,
@@ -454,6 +455,10 @@ class LayerBoard:
                 if hasattr(value, 'encode'):
                     value = value.encode(sys.getfilesystemencoding())
                 lineData.append(value)
+
+                if attr['key'] == 'name':
+                    icon = QgsMapLayerModel.iconForLayer(layer)
+                    newItem.setIcon(icon)
 
                 # Add item
                 table.setItem(twRowCount, i, newItem)
