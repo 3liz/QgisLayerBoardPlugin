@@ -95,26 +95,26 @@ class LayerBoard:
         self.layersTable = {
             'generic': {
                 'attributes': [
-                    {'key': 'id', 'label': self.tr('Id'), 'editable': False},
-                    {'key': 'name', 'label': self.tr('Name'), 'editable': True, 'type': 'string'},
-                    {'key': 'crs', 'label': self.tr('CRS'), 'editable': False, 'type': 'crs'},
-                    {'key': 'maxScale', 'label': self.tr('Max scale'), 'editable': True, 'type': 'integer'},
-                    {'key': 'minScale', 'label': self.tr('Min scale'), 'editable': True, 'type': 'integer'},
-                    {'key': 'extent', 'label': self.tr('Extent'), 'editable': False},
-                    {'key': 'title', 'label': self.tr('Title'), 'editable': True, 'type': 'string'},
-                    {'key': 'abstract', 'label': self.tr('Abstract'), 'editable': True, 'type': 'string'},
-                    {'key': 'shortname', 'label': self.tr('Short name'), 'editable': True, 'type': 'string'},
-                    {'key': 'ghost', 'label': self.tr('Ghost ?'), 'editable': False, 'type': 'string'}
+                    {'key': 'id', 'label': self.tr('Id'), 'editable': False, 'spatial_only': False},
+                    {'key': 'name', 'label': self.tr('Name'), 'editable': True, 'type': 'string', 'spatial_only': False},
+                    {'key': 'crs', 'label': self.tr('CRS'), 'editable': False, 'type': 'crs', 'spatial_only': True},
+                    {'key': 'maxScale', 'label': self.tr('Max scale'), 'editable': True, 'type': 'integer', 'spatial_only': True},
+                    {'key': 'minScale', 'label': self.tr('Min scale'), 'editable': True, 'type': 'integer', 'spatial_only': True},
+                    {'key': 'extent', 'label': self.tr('Extent'), 'editable': False, 'spatial_only': True},
+                    {'key': 'title', 'label': self.tr('Title'), 'editable': True, 'type': 'string', 'spatial_only': False},
+                    {'key': 'abstract', 'label': self.tr('Abstract'), 'editable': True, 'type': 'string', 'spatial_only': False},
+                    {'key': 'shortname', 'label': self.tr('Short name'), 'editable': True, 'type': 'string', 'spatial_only': False},
+                    {'key': 'ghost', 'label': self.tr('Ghost ?'), 'editable': False, 'type': 'string', 'spatial_only': False}
                 ]
             },
             'vector': {
                 'tableWidget': self.dlg.vectorLayers,
                 'attributes': [
-                    {'key': 'labelsEnabled', 'label': self.tr('Labels on'), 'editable': False},
-                    {'key': 'featureCount', 'label': self.tr('Features count'), 'editable': False},
-                    {'key': 'source|uri', 'label': self.tr('Datasource URI'), 'editable': True},
-                    {'key': 'encoding', 'label': self.tr('Encoding'), 'editable': True},
-                    {'key': 'styles_in_db', 'label': self.tr('Styles in DB'), 'editable': False, 'type': 'string'},
+                    {'key': 'labelsEnabled', 'label': self.tr('Labels on'), 'editable': False, 'spatial_only': True},
+                    {'key': 'featureCount', 'label': self.tr('Features count'), 'editable': False, 'spatial_only': False},
+                    {'key': 'source|uri', 'label': self.tr('Datasource URI'), 'editable': True, 'spatial_only': False},
+                    {'key': 'encoding', 'label': self.tr('Encoding'), 'editable': True, 'spatial_only': False},
+                    {'key': 'styles_in_db', 'label': self.tr('Styles in DB'), 'editable': False, 'type': 'string', 'spatial_only': False},
                 ],
                 'commitButton': self.dlg.btCommitVectorChanges,
                 'discardButton': self.dlg.btDiscardVectorChanges
@@ -434,14 +434,19 @@ class LayerBoard:
                 newItem = QTableWidgetItem()
                 newItem.setToolTip(layer.name())
 
+                if layerType == 'vector' and not layer.isSpatial() and attr.get('spatial_only'):
+                    newItem.setFlags(Qt.NoItemFlags)
                 # Is editable or not
-                if (attr['editable']):
+                elif attr.get('editable'):
                     newItem.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsEnabled)
                 else:
                     newItem.setFlags(Qt.ItemIsSelectable)
 
                 # Item value
-                value = self.getLayerProperty(layer, attr['key'])
+                if layerType == 'vector' and not layer.isSpatial() and attr.get('spatial_only'):
+                    value = None
+                else:
+                    value = self.getLayerProperty(layer, attr['key'])
                 newItem.setData(Qt.EditRole, value)
 
                 # Add cell data to lineData
