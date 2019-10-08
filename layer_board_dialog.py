@@ -21,12 +21,11 @@
  ***************************************************************************/
 """
 
-from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog
 
-from .tools import resources_path
+from .qgis_plugin_tools.resources import load_ui
 
-FORM_CLASS, _ = uic.loadUiType(resources_path('ui', 'layer_board_dialog_base.ui'))
+FORM_CLASS = load_ui('layer_board_dialog_base.ui')
 
 
 class LayerBoardDialog(QDialog, FORM_CLASS):

@@ -19,20 +19,17 @@
  *                                                                         *
  ***************************************************************************/
 """
-from __future__ import absolute_import
 
 import csv
 import datetime
 import os.path
 import re
 import sys
-from builtins import next
-from builtins import range
-from builtins import str
+
 from functools import partial
 
 from qgis.PyQt.QtCore import (
-    QCoreApplication, QSettings, QTranslator, qVersion, Qt
+    QCoreApplication, QSettings, QTranslator, Qt
 )
 from qgis.PyQt.QtGui import QIcon, QTextCursor
 from qgis.PyQt.QtWidgets import (
@@ -57,7 +54,7 @@ from qgis.core import (
 from qgis.gui import QgsProjectionSelectionTreeWidget, QgsRendererPropertiesDialog
 
 from .layer_board_dialog import LayerBoardDialog
-from .tools import resources_path
+from .qgis_plugin_tools.resources import resources_path
 
 
 class LayerBoard:
@@ -73,21 +70,14 @@ class LayerBoard:
         """
         # Save reference to the QGIS interface
         self.iface = iface
-        # initialize plugin directory
-        self.plugin_dir = os.path.dirname(__file__)
+
         # initialize locale
         locale = QSettings().value('locale/userLocale')[0:2]
-        locale_path = os.path.join(
-            self.plugin_dir,
-            'i18n',
-            '{}.qm'.format(locale))
+        locale_path = resources_path('i18n', '{}.qm'.format(locale))
 
         if os.path.exists(locale_path):
             self.translator = QTranslator()
             self.translator.load(locale_path)
-
-            if qVersion() > '4.3.3':
-                QCoreApplication.installTranslator(self.translator)
 
         # Create the dialog (after translation) and keep reference
         self.dlg = LayerBoardDialog()

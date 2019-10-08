@@ -1,9 +1,11 @@
 Changelog
 ===========
 
-Version 0.9.0:
+Version 1.0.0:
 
 * Port the plugin to QGIS 3
+* Add icons for layer
+* Hide attributes for non spatial layers
 
 Version 0.8.0:
 
