@@ -442,8 +442,9 @@ class LayerBoard:
 
                 # Add cell data to lineData
                 # encode it in the file system encoding, only if needed
-                if hasattr(value, 'encode'):
-                    value = value.encode(sys.getfilesystemencoding())
+                # TODO DISABLED due to migration to Python 3, related to CSV export
+                # if hasattr(value, 'encode'):
+                #     value = value.encode(sys.getfilesystemencoding())
                 lineData.append(value)
 
                 if attr['key'] == 'name':
@@ -979,7 +980,7 @@ class LayerBoard:
         """
 
         # Cancel if not path given
-        path, __, __ = QFileDialog.getSaveFileName(self.dlg, QApplication.translate("LayerBoard", "Choose the path where the data must be saved."), '', 'CSV(*.csv)')
+        path, _ = QFileDialog.getSaveFileName(self.dlg, QApplication.translate("LayerBoard", "Choose the path where the data must be saved."), '', 'CSV(*.csv)')
         if not path:
             msg = QApplication.translate("LayerBoard", "No destination file chose. Export canceled.")
             status = 'info'
@@ -996,7 +997,7 @@ class LayerBoard:
         # Write data into CSV file
         try:
             QApplication.setOverrideCursor(Qt.WaitCursor)
-            with open(path, 'wb') as csvfile:
+            with open(path, 'w') as csvfile:
                 writer = csv.writer(
                     csvfile, delimiter=self.csvDelimiter, quotechar=self.csvQuotechar, quoting=self.csvQuoting
                 )
