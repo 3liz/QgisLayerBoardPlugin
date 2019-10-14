@@ -24,7 +24,6 @@ import csv
 import datetime
 import os.path
 import re
-import sys
 
 from functools import partial
 
@@ -50,6 +49,7 @@ from qgis.core import (
     QgsVectorLayer,
     Qgis,
     QgsStyle,
+    QgsLayerTreeUtils,
 )
 from qgis.gui import QgsProjectionSelectionTreeWidget, QgsRendererPropertiesDialog
 
@@ -483,9 +483,7 @@ class LayerBoard:
             return layer.shortName()
 
         elif prop == 'ghost':
-            # TODO QGIS 3, check ghost layers
-            # isGhost = str( layer not in self.iface.legendInterface().layers() )
-            return str(False)
+            return str(self.is_ghost_layer(layer))
 
         elif prop == 'crs':
             return layer.crs().authid()
@@ -1018,23 +1016,36 @@ class LayerBoard:
 
     def removeGhostLayers(self):
         """
-        Remove all ghost layers from project
+        Remove all ghost layers from project.
         """
-
-        # Check if the layer is in the map registry but not in the legend
-        lr = QgsProject.instance()
-        li = self.iface.legendInterface()
-        for lname, layer in list(lr.mapLayers().items()):
-            if not layer in li.layers():
-                lr.removeMapLayer(layer.id())
+        project = QgsProject.instance()
+        for layer in project.mapLayers().values():
+            if self.is_ghost_layer(layer):
+                project.removeMapLayer(layer.id())
 
         # Set the dirty flag
-        p = QgsProject.instance()
-        p.setDirty(True)
+        project.setDirty(True)
 
         # Repopulate layers table
         self.populateLayerTable('vector')
         self.populateLayerTable('raster')
+
+    @staticmethod
+    def is_ghost_layer(layer):
+        """Check if the given layer is a ghost layer or not.
+
+        A ghost layer is included in the QgsProject list of layers
+        but is not present in the layer tree.
+
+        :param layer: QgsMapLayer coming from the QgsProject.mapLayers.
+        :type layer: QgsMapLayer
+
+        :return: If the layer is ghost, IE not found in the legend layer tree.
+        :rtype: bool
+        """
+        project = QgsProject.instance()
+        count = QgsLayerTreeUtils.countMapLayerInTree(project.layerTreeRoot(), layer)
+        return count == 0
 
     #####
     # OTHER
