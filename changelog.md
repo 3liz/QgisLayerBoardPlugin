@@ -1,6 +1,10 @@
 Changelog
 ===========
 
+Version 1.0.1:
+* Fix export to CSV
+* Check and clean ghost layers
+
 Version 1.0.0:
 
 * Port the plugin to QGIS 3
