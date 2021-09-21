@@ -637,12 +637,12 @@ class LayerBoard:
                 layer.setShortName(newshortname)
 
             elif prop == 'maxScale':
-                layer.toggleScaleBasedVisibility(True)
+                layer.setScaleBasedVisibility(True)
                 layer.setMaximumScale(float(data))
                 layer.triggerRepaint()
 
             elif prop == 'minScale':
-                layer.toggleScaleBasedVisibility(True)
+                layer.setScaleBasedVisibility(True)
                 layer.setMinimumScale(float(data))
                 layer.triggerRepaint()
 
